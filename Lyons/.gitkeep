@@ -1,0 +1,2 @@
+# Promoted (human) Lean tree. Declarations carry @[lyons_tag "TAG"].
+# Referenced by consumer/lyons/dashboard.toml as human_tree = "clone/Lyons".

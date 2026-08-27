@@ -1,0 +1,15 @@
+{
+    "challenge_module": "Challenge.Basic",
+    "solution_module": "Solution.Basic",
+    "theorem_names": [
+        "Challenge.thm_main_forward",
+        "Challenge.thm_main_general",
+        "Challenge.thm_main_converse"
+    ],
+    "permitted_axioms": [
+        "propext",
+        "Quot.sound",
+        "Classical.choice"
+    ],
+    "enable_nanoda": true
+}

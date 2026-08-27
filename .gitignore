@@ -1,0 +1,14 @@
+/.lake
+
+# LaTeX build artifacts
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
+*.synctex.gz
+*.toc
+__pycache__/
+*.pyc
+_site/
