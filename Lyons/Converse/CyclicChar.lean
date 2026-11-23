@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Fourier.Parseval
-import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-import Mathlib.Data.ZMod.Basic
+module
+
+public import Lyons.Fourier.Parseval
+public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+public import Mathlib.Data.ZMod.Basic
 
 /-!
 # The cyclic character dictionary
@@ -67,6 +69,8 @@ character orthogonality: the `ZMod` form is already available and the dictionary
 is not needed to reach it.
 -/
 
+@[expose] public section
+
 namespace Lyons.Converse
 
 open Finset
@@ -122,7 +126,7 @@ private theorem zsmul_congr (hcard : Fintype.card C = n) {a b : ℤ}
   rw [hab, add_zsmul, hz, add_zero]
 
 /-- A cyclic group of order `n` has `n` elements, so `n ≠ 0`. -/
-private theorem neZero_of_card (hcard : Fintype.card C = n) : NeZero n :=
+theorem neZero_of_card (hcard : Fintype.card C = n) : NeZero n :=
   ⟨by rw [← hcard]; exact Fintype.card_ne_zero⟩
 
 /-- **A generator indexes a cyclic group**: `j ↦ c^j` is a bijection from `ℤ/n`
@@ -147,7 +151,7 @@ theorem cyclicIndex_bijective (hcard : Fintype.card C = n)
 /-- The indexing map of `cyclicIndex_bijective`, bundled as a homomorphism.  Its
 underlying function is `cyclicIndexHom_apply`, i.e. `j ↦ c^j`;
 the bundling is what lets the inverse be transported to characters. -/
-private noncomputable def cyclicIndexHom (hcard : Fintype.card C = n) (c : C) : ZMod n →+ C :=
+noncomputable def cyclicIndexHom (hcard : Fintype.card C = n) (c : C) : ZMod n →+ C :=
   ZMod.lift n ⟨zmultiplesHom C c, by rw [zmultiplesHom_apply]; exact zsmul_card_eq_zero hcard c⟩
 
 private theorem cyclicIndexHom_intCast (hcard : Fintype.card C = n) (j : ℤ) :
@@ -170,7 +174,7 @@ private theorem cyclicIndexHom_one (hcard : Fintype.card C = n) :
 `ℤ/n ≃+ C`.
 This is the object the character dictionary is built from: a character of `C` is
 a character of `ℤ/n` read through it. -/
-private noncomputable def cyclicIndexEquiv (hcard : Fintype.card C = n)
+noncomputable def cyclicIndexEquiv (hcard : Fintype.card C = n)
     (hgen : ∀ x : C, ∃ j : ℤ, j • c = x) : ZMod n ≃+ C :=
   have _ : NeZero n := neZero_of_card hcard
   AddEquiv.ofBijective (cyclicIndexHom hcard c) <| by

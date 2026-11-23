@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Dihedral.Pos
+module
+
+public import Lyons.Dihedral.Pos
 
 /-!
 # The reflection sandwich
@@ -22,6 +24,8 @@ column defines a group-algebra element with that matrix.
 * `Lyons.sandwichMat` : the matrix product.
 * `Lyons.sandwich` : the group-algebra element.
 -/
+
+@[expose] public section
 
 open Matrix DihedralGroup
 open scoped ComplexOrder MatrixOrder

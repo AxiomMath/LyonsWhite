@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Energy
-import Lyons.InversionExtension.ReflectionStep
+module
+
+public import Lyons.Converse.Energy
+public import Lyons.InversionExtension.ReflectionStep
 
 /-!
 # Differentiating the `ℓ^p` power sum in an outside rate
@@ -89,6 +91,9 @@ sandwich on the *closed* `[0, 1]` — the endpoint discrepancy is a multiple of
 `π_G`, which `L a_α` annihilates — so `intervalIntegral.integral_congr` applies
 pointwise and no `ae` filter appears.
 -/
+
+@[expose] public section
+
 open Finset Matrix
 open scoped Norms.Operator MatrixOrder ComplexOrder
 
@@ -134,7 +139,6 @@ Total in the rate for the reason spelled out in the module docstring:
 noncomputable def reflDistPow (lam0 : RateFn G) (s : G) (t p α : ℝ) : ℝ :=
   ∑ g : G, |reflCentCo lam0 s t α g| ^ p
 
-set_option linter.unusedDecidableInType false in
 /-- The total family is the power sum of the orbit increment, wherever the rate
 moved onto the orbit is nonnegative. -/
 theorem reflDistPow_eq (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ} (hα : 0 ≤ α)
@@ -144,7 +148,6 @@ theorem reflDistPow_eq (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ} (hα
   rw [reflDistPow]
   exact Finset.sum_congr rfl fun g _ => by rw [reflCentCo_eq lam0 hs1 hα]
 
-set_option linter.unusedDecidableInType false in
 /-- **The total family is the power sum along `ν[d ↦ β]`.** For `β ≥ 0`,
 
   `reflDistPow (ν[d ↦ 0]) s t p β = ∑_{g ∈ G} |(a_t^{ν[d ↦ β]})_g|^p`.
@@ -160,7 +163,6 @@ theorem reflDistPow_setOrb (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {β : ℝ}
 
 /-! ### The derivative -/
 
-set_option linter.unusedDecidableInType false in
 /-- **The derivative of the `p`-th power sum in the rate on a singleton inverse
 orbit.** The analytic content, for an arbitrary finite group and an arbitrary
 involution `s ≠ 1`.
@@ -242,7 +244,6 @@ theorem hasDerivAt_reflDistPow (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1)
   rw [Set.uIcc_of_le zero_le_one] at hθ
   exact Finset.sum_congr rfl fun g _ => by rw [hval θ hθ g]
 
-set_option linter.unusedDecidableInType false in
 /-- **The derivative of the `p`-th power sum in an outside rate.**
 
 The function is `Lyons.Converse.reflDistPow` at the base rate `ν[d ↦ 0]`, which

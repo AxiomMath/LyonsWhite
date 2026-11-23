@@ -3,11 +3,13 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Blocks
-import Lyons.GroupAlgebra.Positivity
-import Lyons.InversionExtension.CoeffSplit
-import Lyons.InversionExtension.Injective
-import Lyons.Walk.Laplacian
+module
+
+public import Lyons.Converse.Blocks
+public import Lyons.GroupAlgebra.Positivity
+public import Lyons.InversionExtension.CoeffSplit
+public import Lyons.InversionExtension.Injective
+public import Lyons.Walk.Laplacian
 
 /-!
 # The test element is positive, and annihilates the uniform element
@@ -51,6 +53,8 @@ more.
 other two results.
 -/
 
+@[expose] public section
+
 namespace Lyons.Converse
 
 open Finset Matrix
@@ -63,10 +67,6 @@ The proof of `testElement_mul_self` is a case check on the four blocks of
 `Lyons.Converse.rhoAlg_testElement`; three of the four cases are these two
 lemmas, and the fourth is `0 * 0 = 2 • 0`. -/
 
--- Both entrywise checks finish a `simp` normal form with `ring1`/`norm_num`, which
--- is what the flexible linter flags; the normal form is not worth naming, since
--- the only content is the four scalar identities.
-set_option linter.flexible false in
 /-- `!![1,1;1,1]² = 2 !![1,1;1,1]`, the block identity at `k ∈ {1, -1}`. -/
 private theorem ones_sq :
     (!![1, 1; 1, 1] : Matrix (Fin 2) (Fin 2) ℂ) * !![1, 1; 1, 1]
@@ -75,7 +75,6 @@ private theorem ones_sq :
   fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, Fin.sum_univ_two, Complex.real_smul] <;> norm_num
 
-set_option linter.flexible false in
 /-- `(ε !![1,w;w',1])² = 2 (ε² !![1,w;w',1])` whenever `w w' = 1`, the block
 identity at `k = K` and at `k = -K`.
 
@@ -92,7 +91,11 @@ private theorem twist_sq (ε : ℝ) {w w' : ℂ} (hw : w * w' = 1) :
       = (2 : ℝ) • ((ε ^ 2 : ℝ) • !![1, w; w', 1]) := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [Matrix.mul_apply, Fin.sum_univ_two, Complex.real_smul] <;>
+    simp only [smul_of, smul_cons, Complex.real_smul, mul_one, Matrix.smul_empty, Fin.zero_eta,
+      Fin.isValue, Fin.mk_one, cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons,
+      smul_eq_mul, tail_cons, empty_vecMul, add_zero, add_cons, empty_add_empty, Matrix.symm_of,
+      Matrix.empty_mul, coe_rowEquiv, row_of, of_apply, cons_val', cons_val_zero, cons_val_one,
+      cons_val_fin_one, Complex.ofReal_pow, Matrix.smul_apply, Complex.ofReal_ofNat] <;>
     first
       | ring1
       | linear_combination (ε : ℂ) ^ 2 * hw
@@ -212,8 +215,8 @@ theorem testElement_mul_uniform {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n : ℤ)
     rintro (h | h)
     · exact c1 h.symm
     · exact c1 (by linear_combination h)
-  rw [if_neg c1', if_neg (fun h => cK h.symm),
-    if_neg (fun h => cK (by linear_combination h))] at hb
+  rw [ite_eq_right c1', ite_eq_right (fun h => cK h.symm),
+    ite_eq_right (fun h => cK (by linear_combination h))] at hb
   -- Its `(0,0)` and `(1,0)` entries are the two transforms.
   have h00 : InvExtBlock.Ublock (testElement n K ε)
       (cyclicAddChar (ZMod.card n) (exists_zsmul_one (n := n)) (0 : ZMod n)) = 0 := by

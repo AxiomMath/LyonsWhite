@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Jp
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
-import Mathlib.Data.ZMod.Basic
+module
+
+public import Lyons.Converse.Jp
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+public import Mathlib.Data.ZMod.Basic
 
 /-!
 # Two trigonometric sums
@@ -33,6 +35,8 @@ pairing `j` with `n - j`.  The two are the same involution, but the reindexing
 form needs no case distinction at its fixed points and in particular does not
 need `n` odd.
 -/
+
+@[expose] public section
 
 namespace Lyons.Converse
 

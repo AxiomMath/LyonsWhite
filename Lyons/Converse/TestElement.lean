@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Lyons.GroupAlgebra.Basic
-import Lyons.InversionExtension.Basic
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Lyons.GroupAlgebra.Basic
+public import Lyons.InversionExtension.Basic
 
 /-!
 # The test element of the converse direction
@@ -53,6 +55,8 @@ is needed — negating the index in `invol_testElement` — is
 
 Nothing below uses `ε ≥ 0`, so no sign hypothesis on `ε` is assumed.
 -/
+
+@[expose] public section
 
 namespace Lyons.Converse
 

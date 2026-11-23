@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Convex.Mul
-import Lyons.Walk.Nonneg
+module
+
+public import Mathlib.Analysis.Convex.Mul
+public import Lyons.Walk.Nonneg
 
 /-!
 # Convolution by a probability element contracts every even power sum
@@ -25,6 +27,8 @@ not just on `[0, ∞)`.
 * `Lyons.co_mul'` : the convolution rule in the `∑ u, x_u y_{u⁻¹ g}` form.
 * `Lyons.sum_pow_conv_le` : the contraction.
 -/
+
+@[expose] public section
 
 open Finset
 

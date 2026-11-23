@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Laplacian
+module
+
+public import Lyons.Walk.Laplacian
 
 /-!
 # Relabelling a rate function along a group isomorphism
@@ -30,6 +32,8 @@ transition function.
 * `Lyons.heatCoeff_comp` : the transition function transports.
 * `Lyons.Phi_comp` : the centred power sum is unchanged.
 -/
+
+@[expose] public section
 open Matrix
 -- The operator norm on matrices is `scoped`, and `NormedSpace.map_exp` needs the
 -- `NormedRing` instance it provides. Mathlib's own matrix-exponential lemmas open
@@ -91,10 +95,11 @@ section Transport
 variable {G H : Type*} [Group G] [Group H] [Fintype G] [Fintype H]
   [DecidableEq G] [DecidableEq H]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] [DecidableEq H] in
 /-- Relabelling the rate function relabels the Laplacian's coefficients. -/
 theorem co_laplacian_comp (lam : RateFn G) (φ : H ≃* G) (u : H) :
     co (laplacian (lam.comp φ)) u = co (laplacian lam) (φ u) := by
+  classical
   have hsum : ∑ s : H, lam.comp φ s = ∑ s : G, lam s :=
     Fintype.sum_equiv φ.toEquiv _ _ fun s => by simp
   rw [coe_laplacian, coe_laplacian, RateFn.comp_apply, hsum]
@@ -118,7 +123,7 @@ theorem continuous_reindex (e : G ≃ H) :
   simp only [Matrix.reindex_apply, Matrix.submatrix_apply]
   exact (continuous_apply (e.symm j)).comp (continuous_apply (e.symm i))
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] [DecidableEq H] in
 /-- The left regular matrix of the relabelled Laplacian is the original one with
 rows and columns permuted by `φ`. -/
 theorem L_laplacian_comp (lam : RateFn G) (φ : H ≃* G) :

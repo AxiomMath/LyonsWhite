@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-import Mathlib.GroupTheory.SpecificGroups.Dihedral
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+public import Mathlib.GroupTheory.SpecificGroups.Dihedral
+public import Lyons.Meta.Tag
 
 /-!
 # Characters, pointwise powers, and the dihedral generators
@@ -40,6 +42,8 @@ Finiteness is a standing hypothesis everywhere the dual is used.
 identification.
 -/
 
+@[expose] public section
+
 namespace Lyons
 
 open Finset
@@ -58,8 +62,9 @@ abbrev charGroup (A : Type*) [AddCommGroup A] : Type _ := AddChar A ℂ
 group of homomorphisms into `ℂˣ`.
 
 A character's values are roots of unity, hence units. -/
-theorem charGroup_apply_ne_zero {A : Type*} [AddCommGroup A] [Fintype A]
+theorem charGroup_apply_ne_zero {A : Type*} [AddCommGroup A] [Finite A]
     (ψ : charGroup A) (a : A) : ψ a ≠ 0 := by
+  have := Fintype.ofFinite A
   intro h
   have hne : Fintype.card A ≠ 0 := Fintype.card_ne_zero
   have hpow : (ψ a) ^ Fintype.card A = 1 := by
@@ -83,7 +88,7 @@ theorem pi_pow_apply {A : Type*} {M : Type*} [Monoid M] (f : A → M) (m : ℕ)
 
 section Dihedral
 
-variable {n : ℕ} [NeZero n]
+variable {n : ℕ}
 
 /-- **`r` is a rotation of order `n`**, stated about Mathlib's
 `DihedralGroup.r 1` rather than about a fresh name for it. -/

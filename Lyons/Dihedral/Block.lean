@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Dihedral.Rho
-import Lyons.Fourier.EvenPart
+module
+
+public import Lyons.Dihedral.Rho
+public import Lyons.Fourier.EvenPart
 
 /-!
 # Rotation and reflection coefficients, and the block form of `ρ_k`
@@ -38,6 +40,8 @@ coefficients are even, so `U(-k) = U(k)` and the flip disappears — which is wh
 alignment would put the flip on `V`, where evenness is unavailable and it would
 survive into every sandwich lemma.
 -/
+
+@[expose] public section
 
 open Matrix DihedralGroup Finset
 

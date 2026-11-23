@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Orbit
+module
+
+public import Lyons.Walk.Orbit
 
 /-!
 # The transition function is real-valued
@@ -29,6 +31,8 @@ realness of the entries. No spectral theory is involved.
   `Lyons.heatCoeff_eq_real` identifying it with `heatCoeff`.
 * `Lyons.Phi_eq_sum_real` : `Phi` as a sum of real even powers.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexConjugate
@@ -80,12 +84,6 @@ theorem heatCoeff_im (lam : RateFn G) (t : ℝ) (g : G) :
 theorem centeredHeatCoeff_im (lam : RateFn G) (t : ℝ) (g : G) :
     (centeredHeatCoeff lam t g).im = 0 := by
   simp [centeredHeatCoeff, heatCoeff_im]
-
-/-- The transition function, as an honestly `ℝ`-valued function. This is the
-`p_t^λ` of the source paper. -/
-@[lyons_tag "def_heat_coeff_real"]
-noncomputable def heatCoeffReal (lam : RateFn G) (t : ℝ) : G → ℝ :=
-  fun g => (heatCoeff lam t g).re
 
 /-- The `ℝ`-valued and `ℂ`-valued transition functions agree: the heat
 coefficient is real. -/

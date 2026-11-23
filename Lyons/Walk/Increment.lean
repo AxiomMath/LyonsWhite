@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Heat
+module
+
+public import Lyons.Walk.Heat
 
 /-!
 # Raising the rate on one inverse orbit
@@ -29,6 +31,8 @@ by spelling the three defining conditions out.
 
 * `Lyons.laplacian_addOrbit` : `Δ_{λ ⊕_s c} = Δ_λ + c ζ_s`.
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -60,8 +64,8 @@ noncomputable def RateFn.addOrbit (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {c : 
     · simpa [h] using lam.nonneg g
   symm' g := by
     by_cases h : g ∈ invOrbit s
-    · rw [if_pos (inv_mem_invOrbit_iff.mpr h), if_pos h, lam.symm]
-    · rw [if_neg (fun hcon => h (inv_mem_invOrbit_iff.mp hcon)), if_neg h, lam.symm]
+    · rw [ite_eq_left (inv_mem_invOrbit_iff.mpr h), ite_eq_left h, lam.symm]
+    · rw [ite_eq_right (fun hcon => h (inv_mem_invOrbit_iff.mp hcon)), ite_eq_right h, lam.symm]
   atOne := by simp [one_notMem_invOrbit hs1]
 
 @[simp] theorem RateFn.addOrbit_apply (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {c : ℝ}
@@ -96,8 +100,8 @@ noncomputable def RateFn.setOrb (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {α : �
     · simpa [h] using lam.nonneg g
   symm' g := by
     by_cases h : g ∈ invOrbit s
-    · rw [if_pos (inv_mem_invOrbit_iff.mpr h), if_pos h]
-    · rw [if_neg (fun hcon => h (inv_mem_invOrbit_iff.mp hcon)), if_neg h, lam.symm]
+    · rw [ite_eq_left (inv_mem_invOrbit_iff.mpr h), ite_eq_left h]
+    · rw [ite_eq_right (fun hcon => h (inv_mem_invOrbit_iff.mp hcon)), ite_eq_right h, lam.symm]
   atOne := by simp [one_notMem_invOrbit hs1]
 
 @[simp] theorem RateFn.setOrb_apply (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ}
@@ -125,8 +129,8 @@ theorem RateFn.setOrb_eq_addOrbit (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {α :
   DFunLike.ext _ _ fun g => by
     rw [RateFn.addOrbit_apply, RateFn.setOrb_apply, RateFn.setOrb_apply]
     by_cases h : g ∈ invOrbit s
-    · rw [if_pos h, if_pos h, if_pos h, zero_add]
-    · rw [if_neg h, if_neg h, if_neg h]
+    · rw [ite_eq_left h, ite_eq_left h, ite_eq_left h, zero_add]
+    · rw [ite_eq_right h, ite_eq_right h, ite_eq_right h]
 
 end Rate
 
@@ -155,13 +159,13 @@ theorem co_orbitElt (s g : G) :
     nsmul_eq_mul]
   congr 1
   by_cases hg : g ∈ invOrbit s
-  · rw [if_pos hg, Finset.sum_eq_single g]
+  · rw [ite_eq_left hg, Finset.sum_eq_single g]
     · simp
     · intro b _ hb; simp [Ne.symm hb]
     · intro hcon; exact absurd hg hcon
-  · rw [if_neg hg, Finset.sum_eq_zero]
+  · rw [ite_eq_right hg, Finset.sum_eq_zero]
     intro b hb
-    exact if_neg fun hcon => hg (by rw [hcon]; exact hb)
+    exact ite_eq_right fun hcon => hg (by rw [hcon]; exact hb)
 
 /-- The total rate of an increment: `Λ` goes up by `c` times the orbit size. -/
 theorem sum_addOrbit (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {c : ℝ} (hc : 0 ≤ c) :
@@ -175,7 +179,6 @@ theorem sum_addOrbit (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {c : ℝ} (hc : 0 
   rw [Finset.sum_congr rfl fun g _ ↦ hsplit g, Finset.sum_add_distrib,
     Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_const, nsmul_eq_mul]
 
-set_option linter.unusedDecidableInType false in
 /-- **The Laplacian of an orbit increment.** -/
 @[lyons_tag "lem_increment_laplacian"]
 theorem laplacian_addOrbit (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {c : ℝ}

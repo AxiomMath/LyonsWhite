@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Objective.RateMonotonic
-import Lyons.Walk.Relabel
+module
+
+public import Lyons.Objective.RateMonotonic
+public import Lyons.Walk.Relabel
 
 /-!
 # Transporting rate-monotonicity along an isomorphism
@@ -32,6 +34,8 @@ the identity rate commutes with relabelling, since an isomorphism sends `1` to
 * `Lyons.RateMonotonic.of_mulEquiv` : rate-monotonicity transports along an
   isomorphism.
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -79,12 +83,11 @@ theorem IsSymmRate.toRateFn_comp {lam : G → ℝ} (hlam : IsSymmRate lam)
   rw [RateFn.comp_apply, IsSymmRate.toRateFn_apply, IsSymmRate.toRateFn_apply]
   have hiff : φ h = 1 ↔ h = 1 := map_eq_one_iff φ.toMonoidHom φ.injective
   by_cases hh : h = 1
-  · rw [if_pos hh, if_pos (hiff.mpr hh)]
-  · rw [if_neg hh, if_neg (fun hcon => hh (hiff.mp hcon))]
+  · rw [ite_eq_left hh, ite_eq_left (hiff.mpr hh)]
+  · rw [ite_eq_right hh, ite_eq_right (fun hcon => hh (hiff.mp hcon))]
 
 variable [Fintype G] [Fintype H]
 
-set_option linter.unusedDecidableInType false in
 /-- **The distance to stationarity is unchanged by a relabelling.**
 
 The transition function transports by `Lyons.heatCoeffReal_comp`, the two groups
@@ -100,7 +103,6 @@ theorem distToUniform_comp (lam : RateFn G) (φ : H ≃* G) (p t : ℝ) :
   rw [heatCoeffReal_comp]
   rfl
 
-set_option linter.unusedDecidableInType false in
 /-- **Rate-monotonicity transports along an isomorphism.**
 
 Given `φ : H ≃* G` and rate collections on `H`, push them to `G` along `φ⁻¹`,
@@ -129,8 +131,8 @@ theorem RateMonotonic.of_mulEquiv {p : ℝ} (φ : H ≃* G) (hG : RateMonotonic 
     rw [RateFn.comp_apply, IsSymmRate.toRateFn_apply, IsSymmRate.toRateFn_apply]
     have hiff : φ h = 1 ↔ h = 1 := map_eq_one_iff φ.toMonoidHom φ.injective
     by_cases hh : h = 1
-    · rw [if_pos (hiff.mpr hh), if_pos hh]
-    · rw [if_neg (fun hcon => hh (hiff.mp hcon)), if_neg hh, φ.symm_apply_apply]
+    · rw [ite_eq_left (hiff.mpr hh), ite_eq_left hh]
+    · rw [ite_eq_right (fun hcon => hh (hiff.mp hcon)), ite_eq_right hh, φ.symm_apply_apply]
   rw [← hback lam' hlam' hlam, ← hback mu' hmu' hmu, distToUniform_comp,
     distToUniform_comp]
   exact hstep

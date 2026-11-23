@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.Blocks
-import Lyons.Fourier.Inversion
+module
+
+public import Lyons.InversionExtension.Blocks
+public import Lyons.Fourier.Inversion
 
 /-!
 # The blocks determine the element
@@ -32,15 +34,16 @@ out — and `χ z` is a root of unity, so that is possible but pointless.
 * `Lyons.InvExtBlock.rhoAlg_injective` : the blocks determine the element.
 -/
 
+@[expose] public section
+
 open Finset Matrix
 open scoped ComplexConjugate
 
 namespace Lyons.InvExtBlock
 
-variable {A : Type*} [AddCommGroup A] [Fintype A] [DecidableEq A] {z : A}
+variable {A : Type*} [AddCommGroup A] [Fintype A] {z : A}
   [Fact (z + z = 0)]
 
-set_option linter.unusedDecidableInType false in
 /-- **The blocks determine the element.**
 
 If two elements of `ℝ[G_{A,z}]` have the same `2 × 2` block at every character of
@@ -51,13 +54,7 @@ because nothing determines it from the conclusion. Fourier inversion
 (`Lyons.AddCharFourier.dft_inversion`) recovers the two coefficient families
 from their transforms, and the normal form of `Lyons.InvExt` — `rot` and `refl`
 are the only constructors — turns those into all of the coefficients. The
-reindexing `a ↦ a + d` is here just the instantiation `a := b - d`.
-
-`[DecidableEq A]` does not appear in the statement's type but cannot be dropped:
-it is the instance `Lyons.InvExtBlock.rhoAlg_entries` elaborates against inside
-the proof, and letting `classical` supply one there makes the two disagree, so
-the rewrite stops making progress. The linter that flags it is therefore disabled
-for this declaration rather than worked around. -/
+reindexing `a ↦ a + d` is here just the instantiation `a := b - d`. -/
 @[lyons_tag "lem_rho_injective"]
 theorem rhoAlg_injective {x y : MonoidAlgebra ℝ (InvExt A z)} (d : A)
     (h : ∀ χ : AddChar A ℂ, rhoAlg χ d x = rhoAlg χ d y) : x = y := by

@@ -3,18 +3,22 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Algebra.MonoidAlgebra.Defs
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.Normed.Algebra.MatrixExponential
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.GroupTheory.SpecificGroups.Dihedral
-import Mathlib.Tactic.Abel
+module
+
+public import Mathlib.Algebra.MonoidAlgebra.Defs
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.GroupTheory.SpecificGroups.Dihedral
+public import Mathlib.Tactic.Abel
 
 /-! # The formal challenge file, written by humans
 
 This is a human-written file certifying the formal statements that this repository proves.
 
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -95,7 +99,7 @@ def IsSymmRate.toRateFn [Group G] [DecidableEq G] {lam : G → ℝ}
   symm' g := by
     by_cases hg : g = 1
     · simp [hg]
-    · rw [if_neg (by simpa using hg), if_neg hg, h.symm g]
+    · rw [ite_eq_right (by simpa using hg), ite_eq_right hg, h.symm g]
   atOne := by simp
 
 /-- A rate collection is **generating** when its support generates `G`. -/
@@ -175,25 +179,27 @@ instance : Group (InvExt A z) where
       cases y with
       | rot a' =>
         cases w with
-        | rot a'' => exact congrArg rot (by abel)
-        | refl a'' => exact congrArg refl (by abel)
+        | rot a'' => exact congrArg rot (add_assoc a a' a'')
+        | refl a'' => exact congrArg refl (add_assoc a a' a'')
       | refl a' =>
         cases w with
-        | rot a'' => exact congrArg refl (by abel)
-        | refl a'' => exact congrArg rot (by abel)
+        | rot a'' => exact congrArg refl (add_sub_assoc a a' a'')
+        | refl a'' => exact congrArg rot (by rw [add_sub_assoc, add_assoc])
     | refl a =>
       cases y with
       | rot a' =>
         cases w with
-        | rot a'' => exact congrArg refl (by abel)
-        | refl a'' => exact congrArg rot (by abel)
+        | rot a'' => exact congrArg refl (sub_sub a a' a'')
+        | refl a'' => exact congrArg rot (by rw [sub_sub])
       | refl a' =>
         cases w with
-        | rot a'' => exact congrArg rot (by abel)
+        | rot a'' =>
+          refine congrArg rot ?_
+          rw [sub_sub_eq_add_sub, add_right_comm (a - a') z a'', add_sub_right_comm]
         | refl a'' =>
           refine congrArg refl ?_
-          rw [show a - (a' - a'' + z) = a - a' + a'' + -z from by abel, hz']
-          abel
+          rw [sub_add_eq_sub_sub, sub_sub_eq_add_sub, sub_eq_add_neg _ z, hz',
+            add_right_comm (a - a') z a'', add_sub_right_comm]
   one_mul x := by
     cases x with
     | rot a => exact congrArg rot (zero_add a)
@@ -207,7 +213,7 @@ instance : Group (InvExt A z) where
     | rot a => exact congrArg rot (neg_add_cancel a)
     | refl a =>
       refine congrArg rot ?_
-      rw [show a + z - a + z = z + z from by abel]
+      rw [add_sub_cancel_left]
       exact hz.out
 
 end Group

@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.SpecialFunctions.Exponential
-import Lyons.GroupAlgebra.Transfer
-import Lyons.Walk.Centered
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Exponential
+public import Lyons.GroupAlgebra.Transfer
+public import Lyons.Walk.Centered
 
 /-!
 # Fractional powers of the centered heat element
@@ -44,6 +46,8 @@ vanish at `0`.
 * `Lyons.cfc_mul_proj` : `cfc f (M Q) = (cfc f M) Q` when `f 0 = 0`.
 * `Lyons.powElt_centeredElt` : `(a_t^λ)^θ = a_{θt}^λ`.
 -/
+
+@[expose] public section
 
 open Matrix
 
@@ -120,10 +124,10 @@ theorem mul_proj_pow (M Q : Matrix m m ℂ) (hc : Commute M Q) (hQ : Q * Q = Q) 
 theorem aeval_mul_proj (M Q : Matrix m m ℂ) (hc : Commute M Q) (hQ : Q * Q = Q)
     (q : Polynomial ℝ) :
     Polynomial.aeval (M * Q) q
-      = (Polynomial.aeval M q) * Q + (Polynomial.coeff q 0) • ((1 : Matrix m m ℂ) - Q) := by
+      = (Polynomial.aeval M q) * Q + (q.coeff 0) • ((1 : Matrix m m ℂ) - Q) := by
   induction q using Polynomial.induction_on' with
   | add p r hp hr =>
-    rw [map_add, map_add, hp, hr, Polynomial.coeff_add, add_smul, add_mul]
+    rw [map_add, map_add, hp, hr, AddMonoidAlgebra.coeff_add, Finsupp.add_apply, add_smul, add_mul]
     abel
   | monomial n c =>
     cases n with
@@ -145,7 +149,7 @@ theorem cfc_mul_proj (M Q : Matrix m m ℂ) (hM : IsSelfAdjoint M)
   obtain ⟨q, hq⟩ := exists_polynomial_eqOn
     (((Matrix.finite_real_spectrum (A := M * Q)).union
       (Matrix.finite_real_spectrum (A := M))).union (Set.finite_singleton (0:ℝ))) f
-  have hq0 : Polynomial.coeff q 0 = 0 := by
+  have hq0 : q.coeff 0 = 0 := by
     rw [Polynomial.coeff_zero_eq_eval_zero, hq 0 (Or.inr rfl), hf0]
   rw [cfc_congr (a := M * Q) (f := f) (g := fun r => q.eval r)
       (fun r hr => (hq r (Or.inl (Or.inl hr))).symm),
@@ -162,13 +166,11 @@ section Centered
 
 variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
-set_option linter.unusedDecidableInType false in
 /-- The centered element is the heat matrix times the complementary projection. -/
 theorem L_centeredElt_eq_mul (lam : RateFn G) (t : ℝ) :
     L (centeredElt lam t) = heatMat lam t * (1 - L (uniform G)) := by
   rw [L_centeredElt, mul_sub, mul_one, ← L_heatElt, ← L_mul, heatElt_mul_uniform]
 
-set_option linter.unusedDecidableInType false in
 /-- **Fractional powers of the centered heat element rescale the time.** -/
 @[lyons_tag "lem_centered_rpow"]
 theorem powElt_centeredElt (lam : RateFn G) (t : ℝ) {θ : ℝ} (hθ : 0 < θ) :

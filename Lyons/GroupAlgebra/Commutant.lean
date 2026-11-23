@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
-import Lyons.GroupAlgebra.Basic
+module
+
+public import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Commute
+public import Lyons.GroupAlgebra.Basic
 
 /-!
 # Right translations and the commutant of the left regular representation
@@ -24,6 +26,8 @@ right translation, hence is again a left convolution.
 * `Lyons.commutes_R_iff` : a matrix commutes with every right translation iff
   its entries depend only on `g * g'⁻¹`, i.e. iff it is a left convolution.
 -/
+
+@[expose] public section
 
 open Matrix
 
@@ -46,9 +50,9 @@ theorem mul_R_apply (T : Matrix G G ℂ) (h g g' : G) :
   classical
   rw [Matrix.mul_apply]
   rw [Finset.sum_eq_single (g' * h⁻¹)]
-  · rw [R_apply, if_pos (by group), mul_one]
+  · rw [R_apply, ite_eq_left (by group), mul_one]
   · intro u _ hu
-    rw [R_apply, if_neg (fun hcon => hu (by rw [hcon]; group)), mul_zero]
+    rw [R_apply, ite_eq_right (fun hcon => hu (by rw [hcon]; group)), mul_zero]
   · intro hcon; exact absurd (Finset.mem_univ _) hcon
 
 /-- Left multiplication by `R h` shifts the row index by `h`. -/
@@ -57,9 +61,9 @@ theorem R_mul_apply (T : Matrix G G ℂ) (h g g' : G) :
   classical
   rw [Matrix.mul_apply]
   rw [Finset.sum_eq_single (g * h)]
-  · rw [R_apply, if_pos rfl, one_mul]
+  · rw [R_apply, ite_eq_left rfl, one_mul]
   · intro u _ hu
-    rw [R_apply, if_neg hu, zero_mul]
+    rw [R_apply, ite_eq_right hu, zero_mul]
   · intro hcon; exact absurd (Finset.mem_univ _) hcon
 
 /-- Left convolutions commute with right translations. -/

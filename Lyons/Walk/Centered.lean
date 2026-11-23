@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Heat
+module
+
+public import Lyons.Walk.Heat
 
 /-!
 # The centered heat element is positive
@@ -32,6 +34,8 @@ exponential of a self-adjoint matrix. Mathlib's
 * `Lyons.invol_centeredElt` : `a_t^λ` is self-adjoint.
 -/
 
+@[expose] public section
+
 open Matrix
 open scoped MatrixOrder ComplexOrder
 
@@ -41,7 +45,6 @@ variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
 /-! ### The heat matrix is positive -/
 
-set_option linter.unusedDecidableInType false in
 /-- The heat matrix is self-adjoint: the conjugate transpose passes through the
 exponential, and the generator is self-adjoint. -/
 theorem heatMat_conjTranspose (lam : RateFn G) (t : ℝ) :
@@ -50,7 +53,6 @@ theorem heatMat_conjTranspose (lam : RateFn G) (t : ℝ) :
   rw [← Matrix.exp_conjTranspose, Matrix.conjTranspose_smul,
     ← L_invol, laplacian_invol, star_neg, Complex.star_def, Complex.conj_ofReal]
 
-set_option linter.unusedDecidableInType false in
 /-- The heat matrix at time `t` is the square of the one at `t / 2`. -/
 theorem heatMat_half (lam : RateFn G) (t : ℝ) :
     heatMat lam t = heatMat lam (t / 2) * heatMat lam (t / 2) := by
@@ -89,7 +91,6 @@ theorem exp_posSemidef {A : Matrix G G ℂ} (hA : IsSelfAdjoint A) :
   rw [h]
   exact Matrix.posSemidef_conjTranspose_mul_self _
 
-set_option linter.unusedDecidableInType false in
 /-- **The heat matrix is positive.** `Lyons.exp_posSemidef` at the generator. -/
 theorem heatMat_posSemidef (lam : RateFn G) (t : ℝ) : (heatMat lam t).PosSemidef := by
   rw [heatMat]
@@ -101,26 +102,24 @@ theorem heatMat_posSemidef (lam : RateFn G) (t : ℝ) : (heatMat lam t).PosSemid
   change star (-(t : ℂ) • L (laplacian lam)) = _
   rw [star_smul, ht, hL]
 
-set_option linter.unusedDecidableInType false in
 theorem heatMat_nonneg (lam : RateFn G) (t : ℝ) :
     (0 : Matrix G G ℂ) ≤ heatMat lam t :=
   Matrix.nonneg_iff_posSemidef.mpr (heatMat_posSemidef lam t)
 
 /-! ### The uniform projection -/
 
-set_option linter.unusedDecidableInType false in
-set_option linter.unusedSectionVars false in
+omit [DecidableEq G] in
 /-- The uniform element is self-adjoint: every coefficient is the same. -/
 @[simp] theorem invol_uniform : invol (uniform G) = uniform G := by
   refine co_injective fun g ↦ ?_
   rw [co_invol, coe_uniform, coe_uniform]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 /-- `P = L_{π_G}` is self-adjoint. -/
 theorem L_uniform_conjTranspose : (L (uniform G))ᴴ = L (uniform G) := by
   rw [← L_invol, invol_uniform]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 /-- `P` is idempotent. -/
 theorem L_uniform_mul_self : L (uniform G) * L (uniform G) = L (uniform G) := by
   rw [← L_mul, uniform_idem]
@@ -136,7 +135,6 @@ are the centered transition function. -/
 noncomputable def centeredElt (lam : RateFn G) (t : ℝ) : MonoidAlgebra ℝ G :=
   heatElt lam t - uniform G
 
-set_option linter.unusedDecidableInType false in
 @[simp] theorem co_centeredElt (lam : RateFn G) (t : ℝ) (g : G) :
     co (centeredElt lam t) g = centeredHeatCoeffReal lam t g := by
   rw [centeredElt, co_sub, co_heatElt, coe_uniform, centeredHeatCoeffReal]

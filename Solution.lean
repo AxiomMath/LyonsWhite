@@ -1,1 +1,3 @@
-import Solution.Basic
+module
+
+public import Solution.Basic

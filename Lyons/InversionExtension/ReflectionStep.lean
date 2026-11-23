@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.Sandwich
-import Lyons.Walk.OrbitStep
+module
+
+public import Lyons.InversionExtension.Sandwich
+public import Lyons.Walk.OrbitStep
 
 /-!
 # The step outside the abelian part
@@ -43,6 +45,8 @@ needed at once.
 * `Lyons.Phi_addOrbit_refl_le` : the same, in orbit-increment form.
 -/
 
+@[expose] public section
+
 open Finset Matrix
 open scoped Norms.Operator MatrixOrder ComplexOrder
 
@@ -68,7 +72,6 @@ theorem exists_refl_of_mem_invOrbit_refl {d : A} {x : InvExt A z}
 
 variable [Fintype A]
 
-set_option linter.unusedDecidableInType false in
 /-- **The reflection inequality at every element of the orbit of `ι d τ`.**
 
 For `z ≠ 0` this is two instances of
@@ -87,7 +90,6 @@ theorem key_refl (lam : RateFn (InvExt A z)) (d : A) (t : ℝ) :
   obtain ⟨d', rfl⟩ := exists_refl_of_mem_invOrbit_refl hx
   exact InvExtBlock.sum_co_pow_mul_sandwich_le d' _ (centeredElt_isPos _ _) hθ0 hθ1 p
 
-set_option linter.unusedDecidableInType false in
 /-- **The power sum is differentiable in an outside rate.**
 
 Stated on `Lyons.reflPhi`, the total reparametrisation of
@@ -102,7 +104,6 @@ theorem differentiableAt_reflPhi_refl (lam : RateFn (InvExt A z)) (d : A) (t α 
       (fun a : ℝ => reflPhi lam (InvExt.refl d) t m a) α :=
   (hasDerivAt_reflPhi lam (InvExt.refl d) t α m).differentiableAt
 
-set_option linter.unusedDecidableInType false in
 /-- **The derivative of the power sum in an outside rate is nonpositive.**
 
 This is where `Lyons.InvExtBlock.sum_co_pow_mul_sandwich_le` — the reflection
@@ -130,7 +131,6 @@ theorem deriv_reflPhi_refl_nonpos (lam : RateFn (InvExt A z)) (d : A) {α : ℝ}
   rw [hfactor]
   exact mul_nonpos_of_nonneg_of_nonpos (by positivity) hsum
 
-set_option linter.unusedDecidableInType false in
 /-- **Increasing an outside rate does not increase the power sum**, in the
 source's own `λ[d ↦ α]` parametrisation. -/
 @[lyons_tag "lem_reflection_step"]
@@ -148,7 +148,6 @@ theorem Phi_setOrb_refl_le (lam : RateFn (InvExt A z)) (d : A) {t : ℝ} (ht : 0
     ← RateFn.setOrb_eq_addOrbit lam (refl_ne_one d) h₀] at h
   exact h
 
-set_option linter.unusedDecidableInType false in
 /-- **Raising the rate on an outside inverse orbit does not increase the power
 sum**, in the orbit-increment form the induction consumes. -/
 theorem Phi_addOrbit_refl_le (lam : RateFn (InvExt A z)) (d : A) {c : ℝ}

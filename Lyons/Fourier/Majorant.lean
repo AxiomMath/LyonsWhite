@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Fourier.Parseval
+module
+
+public import Lyons.Fourier.Parseval
 
 /-!
 # The finite even-exponent Fourier majorant inequality
@@ -25,6 +27,8 @@ be an even integer; the rest of it works for every real `p ≥ 1`.
   of `𝓕 (f ^ m)` and the nonneg-realness of `𝓕 (u ^ m)`.
 * `ZMod.sum_norm_pow_le` : the majorant inequality.
 -/
+
+@[expose] public section
 
 open Finset
 open scoped ComplexConjugate
@@ -104,10 +108,10 @@ theorem dft_mul (f g : ZMod N → ℂ) (k : ZMod N) :
   rw [dft_apply, Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ ↦ ?_
   rw [Finset.sum_eq_single j]
-  · rw [sub_self, if_pos rfl, smul_eq_mul]
+  · rw [sub_self, ite_eq_left rfl, smul_eq_mul]
     simp only [Pi.mul_apply]
   · intro j' _ hj'
-    rw [if_neg (by simpa [sub_eq_zero] using hj'), zero_mul]
+    rw [ite_eq_right (by simpa [sub_eq_zero] using hj'), zero_mul]
   · intro h; exact absurd (Finset.mem_univ j) h
 
 /-- The inductive heart of the majorant argument: domination of the transforms

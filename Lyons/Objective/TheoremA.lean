@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.Main
-import Lyons.Objective.Transport
+module
+
+public import Lyons.InversionExtension.Main
+public import Lyons.Objective.Transport
 
 /-!
 # Rate-monotonicity of the dihedral group at an even exponent
@@ -30,6 +32,8 @@ the inversion extension is `0 + 0 = 0`, supplied by
 
 * `Lyons.rateMonotonic_dihedral_even` — `(D_n, 2m)` is rate-monotonic.
 -/
+
+@[expose] public section
 
 namespace Lyons
 

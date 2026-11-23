@@ -3,11 +3,13 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Calculus.Deriv.Abs
-import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
-import Mathlib.Data.Real.Sign
-import Mathlib.MeasureTheory.Constructions.BorelSpace.Real
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.Abs
+public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+public import Mathlib.Basic.Real.Sign
+public import Mathlib.MeasureTheory.Constructions.BorelSpace.Real
+public import Lyons.Meta.Tag
 
 /-!
 # The signed power `J_p`
@@ -43,6 +45,8 @@ Also needed to integrate `J_p ∘ cos`:
 `|J_p(y)| ≤ 1` for `|y| ≤ 1` are immediate.
 -/
 
+@[expose] public section
+
 namespace Lyons.Converse
 
 /-- The signed power `J_p(y) = |y|^{p-2} y` for `y ≠ 0`, and `J_p(0) = 0`.
@@ -53,10 +57,10 @@ noncomputable def signedPow (p y : ℝ) : ℝ := if y = 0 then 0 else |y| ^ (p -
 variable {p y : ℝ}
 
 @[simp]
-theorem signedPow_zero (p : ℝ) : signedPow p 0 = 0 := if_pos rfl
+theorem signedPow_zero (p : ℝ) : signedPow p 0 = 0 := ite_eq_left rfl
 
 theorem signedPow_of_ne_zero (p : ℝ) (hy : y ≠ 0) :
-    signedPow p y = |y| ^ (p - 2) * y := if_neg hy
+    signedPow p y = |y| ^ (p - 2) * y := ite_eq_right hy
 
 /-- Away from the origin `J_p(y) = |y|^{p-1} * sign y`; the form used to read off
 the size of `J_p`. -/

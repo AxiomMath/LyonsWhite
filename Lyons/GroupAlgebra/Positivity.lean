@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.SpecialFunctions.Exponential
-import Lyons.GroupAlgebra.Sqrt
-import Lyons.Walk.Basic
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Exponential
+public import Lyons.GroupAlgebra.Sqrt
+public import Lyons.Walk.Basic
 
 /-!
 # Positivity in the group algebra: scalars, squares, and three ambient inputs
@@ -60,6 +62,8 @@ at the use site, which has to open the scoped norm anyway.
 * `Lyons.exp_smul_of_isIdempotentElem` : `e^{sQ} = 1 + (e^s - 1) Q` for an
   idempotent `Q`.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped MatrixOrder ComplexOrder

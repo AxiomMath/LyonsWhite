@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Real
+module
+
+public import Lyons.Walk.Real
 
 /-!
 # Coefficients of the Laplacian, and absorption by the uniform element
@@ -17,29 +19,21 @@ import Lyons.Walk.Real
 * `Lyons.uniform_idem` : `π_G` is idempotent.
 -/
 
+@[expose] public section
+
 open Finset
 
 namespace Lyons
 
 
 section
-variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
-
--- `DecidableEq G` is genuinely required by the coefficient computations these
--- proofs invoke (`coe_laplacian`, `MonoidAlgebra.coeff_mul_apply_right`), but
--- Lean sees it used only inside the proof terms, not in the statements. Omitting
--- it breaks elaboration, and the linter's suggested `open scoped Classical` would
--- substitute a decidability instance different from the one `Lyons.L` and
--- `Lyons.uniform` were built with, risking instance mismatch. So the two
--- unused-hypothesis checks are disabled for this section only.
-set_option linter.unusedDecidableInType false
-set_option linter.unusedSectionVars false
+variable {G : Type*} [Group G] [Fintype G]
 
 /-! ### The Laplacian -/
 
 /-- Coefficients of the Laplacian: the total rate at the identity, `-λ g`
 elsewhere. -/
-theorem coe_laplacian (lam : RateFn G) (g : G) :
+theorem coe_laplacian [DecidableEq G] (lam : RateFn G) (g : G) :
     co (laplacian lam) g = (if g = 1 then ∑ s : G, lam s else 0) - lam g := by
   classical
   rw [laplacian, co_sum]
@@ -62,6 +56,7 @@ theorem coe_laplacian (lam : RateFn G) (g : G) :
 /-- **The Laplacian is self-adjoint.** -/
 @[lyons_tag "lem_laplacian_star"]
 theorem laplacian_invol (lam : RateFn G) : invol (laplacian lam) = laplacian lam := by
+  classical
   refine co_injective fun g ↦ ?_
   rw [co_invol, coe_laplacian, coe_laplacian, lam.symm]
   congr 1

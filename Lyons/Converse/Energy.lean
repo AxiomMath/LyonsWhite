@@ -3,10 +3,12 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Jp
-import Lyons.Dihedral.Sandwich
-import Lyons.GroupAlgebra.Positivity
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+module
+
+public import Lyons.Converse.Jp
+public import Lyons.Dihedral.Sandwich
+public import Lyons.GroupAlgebra.Positivity
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
 # The reflection energy
@@ -54,6 +56,8 @@ integrand as written is total in `θ`, so no extension has to be chosen and no
 `ContinuousOn` bookkeeping is needed; the interval integral over `(0, 1)` is
 taken as written.
 -/
+
+@[expose] public section
 
 open Finset MeasureTheory
 open scoped MatrixOrder ComplexOrder

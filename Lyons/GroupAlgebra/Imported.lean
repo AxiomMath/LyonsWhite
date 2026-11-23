@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.CenteredRpow
+module
+
+public import Lyons.Walk.CenteredRpow
 
 /-!
 # Matrix-exponential and functional-calculus inputs imported from Mathlib
@@ -57,6 +59,8 @@ must therefore qualify the one they mean.
 * `Lyons.exp_cfc_eq_of_eqOn_log` : `e^(φ M) = M` when `φ` agrees with `Real.log`
   on the spectrum of a positive definite `M`.
 -/
+
+@[expose] public section
 
 open Matrix
 -- `Matrix.PosDef` is an order-theoretic statement about `⟪M η, η⟫ : ℂ`.

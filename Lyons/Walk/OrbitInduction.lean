@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Increment
+module
+
+public import Lyons.Walk.Increment
 
 /-!
 # Interpolating between ordered rate functions
@@ -27,26 +29,25 @@ there — not merely below it.
 * `Lyons.Phi_le_of_le_of_step` : the induction, from the one-orbit step.
 -/
 
+@[expose] public section
+
 open Finset
 
 namespace Lyons
 
 variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
-set_option linter.unusedDecidableInType false in
 /-- The disagreement set of two rate functions. -/
 noncomputable def disagree (lam mu : RateFn G) : Finset G :=
   open Classical in Finset.univ.filter fun g => lam g ≠ mu g
 
 omit [DecidableEq G] in
-set_option linter.unusedDecidableInType false in
 theorem mem_disagree {lam mu : RateFn G} {g : G} :
     g ∈ disagree lam mu ↔ lam g ≠ mu g := by
   classical
   simp [disagree]
 
 omit [DecidableEq G] in
-set_option linter.unusedDecidableInType false in
 theorem eq_of_disagree_eq_empty {lam mu : RateFn G} (h : disagree lam mu = ∅) :
     lam = mu := by
   refine DFunLike.ext _ _ fun g => ?_
@@ -60,7 +61,6 @@ def OneOrbitStep (G : Type*) [Group G] [Fintype G] [DecidableEq G] (t : ℝ)
   ∀ (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {c : ℝ} (hc : 0 ≤ c),
     Phi (lam.addOrbit hs1 hc) t m ≤ Phi lam t m
 
-set_option linter.unusedDecidableInType false in
 /-- The induction on the size of the disagreement set. -/
 theorem Phi_le_of_le_aux {t : ℝ} {m : ℕ} (step : OneOrbitStep G t m) :
     ∀ N : ℕ, ∀ lam mu : RateFn G, (∀ g, lam g ≤ mu g) →
@@ -81,12 +81,12 @@ theorem Phi_le_of_le_aux {t : ℝ} {m : ℕ} (step : OneOrbitStep G t m) :
     -- on the raised orbit the increment lands exactly on `mu`
     have horb : ∀ g : G, g ∈ invOrbit s → lam' g = mu g := by
       intro g hg
-      rw [hlam', RateFn.addOrbit_apply, if_pos hg,
+      rw [hlam', RateFn.addOrbit_apply, ite_eq_left hg,
         lam.apply_of_mem_invOrbit hg, mu.apply_of_mem_invOrbit hg]
       ring
     have hoff : ∀ g : G, g ∉ invOrbit s → lam' g = lam g := by
       intro g hg
-      rw [hlam', RateFn.addOrbit_apply, if_neg hg]
+      rw [hlam', RateFn.addOrbit_apply, ite_eq_right hg]
     have hle' : ∀ g, lam' g ≤ mu g := by
       intro g
       by_cases hg : g ∈ invOrbit s
@@ -108,7 +108,6 @@ theorem Phi_le_of_le_aux {t : ℝ} {m : ℕ} (step : OneOrbitStep G t m) :
       omega
     exact (ih lam' mu hle' hcard').trans (step lam hs1 hc)
 
-set_option linter.unusedDecidableInType false in
 /-- **Increasing every rate does not increase the power sum**, given the one-orbit
 step.
 

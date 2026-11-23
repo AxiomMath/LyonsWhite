@@ -3,10 +3,12 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.GroupTheory.SpecificGroups.Dihedral
-import Mathlib.LinearAlgebra.Matrix.Notation
-import Lyons.Fourier.Parseval
-import Lyons.GroupAlgebra.Basic
+module
+
+public import Mathlib.GroupTheory.SpecificGroups.Dihedral
+public import Mathlib.LinearAlgebra.Matrix.Notation
+public import Lyons.Fourier.Parseval
+public import Lyons.GroupAlgebra.Basic
 
 /-!
 # The two-dimensional representations of the dihedral group
@@ -35,6 +37,8 @@ be caught by a spot check on rotations.
 character API already established for the Fourier work — `AddChar.map_add_eq_mul`
 does all the arithmetic.
 -/
+
+@[expose] public section
 
 open Matrix DihedralGroup
 

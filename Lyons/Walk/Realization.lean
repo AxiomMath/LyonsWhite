@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.GroupAlgebra.Imported
-import Lyons.GroupAlgebra.Positivity
-import Lyons.Objective.RateMonotonic
+module
+
+public import Lyons.GroupAlgebra.Imported
+public import Lyons.GroupAlgebra.Positivity
+public import Lyons.Objective.RateMonotonic
 
 /-!
 # Realising an element of the group algebra as a centered heat element
@@ -46,6 +48,8 @@ topology. This is how Mathlib's own `Matrix.exp_add_of_commute` is written.
 * `Lyons.exists_rate_centeredHeat_eq` : realisation as a centered heat element.
 -/
 
+@[expose] public section
+
 open Matrix
 -- `Matrix.PosDef` is an order-theoretic statement about `⟪M η, η⟫ : ℂ`.
 open scoped ComplexOrder
@@ -67,7 +71,7 @@ theorem invol_uniform_add (hx : IsPos x) : invol (uniform H + x) = uniform H + x
   have hxinv : co x g⁻¹ = co x g := by rw [← co_invol, hx.invol_eq]
   rw [co_invol, co_add, co_add, coe_uniform, coe_uniform, hxinv]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq H] in
 /-- **`L (π_H + x)` is positive definite.**
 
 No splitting of `η` as `Pη + (I - P)η`, and hence no appeal to
@@ -266,7 +270,7 @@ theorem exists_rate_centeredHeat_eq {x : MonoidAlgebra ℝ H} (hx : IsPos x)
   have hlampos : ∀ s : H, s ≠ 1 → 0 < lam s := by
     intro s hs
     rw [hlamdef]
-    simp only [if_neg hs]
+    simp only [ite_eq_right hs]
     linarith [hlt s]
   have hlamS : IsSymmRate lam := by
     refine ⟨fun g ↦ ?_, fun g ↦ ?_⟩
@@ -277,7 +281,7 @@ theorem exists_rate_centeredHeat_eq {x : MonoidAlgebra ℝ H} (hx : IsPos x)
       · simp [hlamdef, hg]
       · have hg' : g⁻¹ ≠ 1 := by simpa using hg
         have hYcoe : co Y g⁻¹ = co Y g := by rw [← co_invol, hYinv]
-        simp only [hlamdef, if_neg hg, if_neg hg', hYcoe]
+        simp only [hlamdef, ite_eq_right hg, ite_eq_right hg', hYcoe]
   refine ⟨lam, hlamS, rho, ?_, hlampos, hrho, ?_⟩
   · -- generating: the support is all of `H \ {1}`, which generates `H`
     refine (Subgroup.eq_top_iff' _).2 fun g ↦ ?_
@@ -301,7 +305,7 @@ theorem exists_rate_centeredHeat_eq {x : MonoidAlgebra ℝ H} (hx : IsPos x)
     rw [Finset.sum_congr rfl fun s _ ↦ hf s, Finset.sum_sub_distrib,
       Finset.sum_ite_eq' Finset.univ (1 : H)
         (fun _ ↦ rho / (Fintype.card H : ℝ) - co Y 1)]
-    simp only [Finset.mem_univ, if_true]
+    simp only [Finset.mem_univ, ite_true]
     congr 1
     rw [Finset.sum_sub_distrib, hsig, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
       sub_zero]
@@ -310,10 +314,10 @@ theorem exists_rate_centeredHeat_eq {x : MonoidAlgebra ℝ H} (hx : IsPos x)
     refine co_injective fun g ↦ ?_
     rw [coe_laplacian, hsum, hnu, co_add, co_smul, co_sub, co_one, coe_uniform]
     by_cases hg : g = 1
-    · simp only [hg, if_true]
+    · simp only [hg, ite_true]
       field_simp
       ring
-    · simp only [if_neg hg]
+    · simp only [ite_eq_right hg]
       field_simp
       ring
   -- Step 4: the heat matrix at time one.

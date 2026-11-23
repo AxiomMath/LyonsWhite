@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Fourier.AddCharBasic
+module
+
+public import Lyons.Fourier.AddCharBasic
 
 /-!
 # Fourier inversion over a finite abelian group
@@ -40,6 +42,8 @@ appears below as `conj (ψ a) = ψ (-a)`.
 `dft f ψ = ∑ a, f a * ψ a`. The inversion formula therefore has the conjugate on
 the character and the normalisation `|A|⁻¹` outside the sum over the dual.
 -/
+
+@[expose] public section
 
 namespace Lyons.AddCharFourier
 
@@ -112,9 +116,9 @@ theorem dft_inversion (f : A → ℂ) (a : A) :
   have key : ∑ ψ : AddChar A ℂ, dft f ψ * conj (ψ a) = (Fintype.card A : ℂ) * f a := by
     rw [Finset.sum_congr rfl fun ψ _ ↦ expand ψ, Finset.sum_comm,
       Finset.sum_congr rfl fun a' _ ↦ step a', Finset.sum_eq_single a]
-    · rw [sub_self, if_pos rfl, mul_comm]
+    · rw [sub_self, ite_eq_left rfl, mul_comm]
     · intro b _ hb
-      rw [if_neg (by simpa [sub_eq_zero] using hb), mul_zero]
+      rw [ite_eq_right (by simpa [sub_eq_zero] using hb), mul_zero]
     · intro h; exact absurd (Finset.mem_univ a) h
   rw [key, inv_mul_cancel_left₀ hcard]
 

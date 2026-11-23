@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Dihedral.Sandwich
-import Lyons.Walk.ReflectionDeriv
+module
+
+public import Lyons.Dihedral.Sandwich
+public import Lyons.Walk.ReflectionDeriv
 
 /-!
 # The power sum along a one-orbit rate family
@@ -58,6 +60,8 @@ is indexed by `p` with `m = p + 1`, matching the reflection inequality's `2p+1` 
   step, modulo the reflection inequality.
 -/
 
+@[expose] public section
+
 open Matrix Finset
 open scoped Norms.Operator MatrixOrder ComplexOrder
 
@@ -67,7 +71,7 @@ variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
 /-! ### Absorption on the right -/
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 theorem single_mul_uniform (b : G) :
     MonoidAlgebra.single b (1 : ℝ) * uniform G = uniform G := by
   classical
@@ -79,17 +83,15 @@ theorem single_mul_uniform (b : G) :
     · intro hcon; exact absurd (Finset.mem_univ b) hcon
   rw [h, one_smul]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 theorem L_single_mul_L_uniform (b : G) :
     L (MonoidAlgebra.single b (1 : ℝ)) * L (uniform G) = L (uniform G) := by
   rw [← L_mul, single_mul_uniform]
 
-set_option linter.unusedDecidableInType false in
 theorem centeredElt_mul_uniform (lam : RateFn G) (t : ℝ) :
     centeredElt lam t * uniform G = 0 := by
   rw [centeredElt, sub_mul, heatElt_mul_uniform, uniform_idem, sub_self]
 
-set_option linter.unusedDecidableInType false in
 theorem uniform_mul_centeredElt (lam : RateFn G) (t : ℝ) :
     uniform G * centeredElt lam t = 0 := by
   rw [centeredElt, mul_sub, uniform_mul_heatElt, uniform_idem, sub_self]
@@ -108,12 +110,10 @@ theorem mpow_one {M : Matrix G G ℂ} (hM : IsSelfAdjoint M) : mpow M 1 = M := b
 
 /-! ### The Duhamel integrand is the sandwich, endpoints included -/
 
-set_option linter.unusedDecidableInType false in
 theorem L_uniform_mul_L_centeredElt (lam : RateFn G) (t : ℝ) :
     L (uniform G) * L (centeredElt lam t) = 0 := by
   rw [← L_mul, uniform_mul_centeredElt, L_zero]
 
-set_option linter.unusedDecidableInType false in
 theorem L_centeredElt_mul_L_uniform (lam : RateFn G) (t : ℝ) :
     L (centeredElt lam t) * L (uniform G) = 0 := by
   rw [← L_mul, centeredElt_mul_uniform, L_zero]
@@ -126,7 +126,6 @@ theorem isSelfAdjoint_L_centeredElt (lam : RateFn G) (t : ℝ) :
     IsSelfAdjoint (L (centeredElt lam t)) :=
   (Matrix.nonneg_iff_posSemidef.mp ((isPos_iff_le _).mp (centeredElt_isPos lam t))).isHermitian
 
-set_option linter.unusedDecidableInType false in
 /-- **The Duhamel integrand is the sandwich, for every `θ ∈ [0,1]`.**
 
 At `θ = 0` and `θ = 1` the two sides' *factors* differ — `a_α^0 = 1`, not `1 - P` —
@@ -175,7 +174,6 @@ theorem reflHeatMat_sandwich (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ
 noncomputable def reflCentCo (lam0 : RateFn G) (s : G) (t α : ℝ) (g : G) : ℝ :=
   ((reflHeatMat lam0 s t α * (1 - L (uniform G))) g 1).re
 
-set_option linter.unusedDecidableInType false in
 theorem reflCentCo_eq (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ} (hα : 0 ≤ α)
     (t : ℝ) (g : G) :
     reflCentCo lam0 s t α g = co (centeredElt (lam0.addOrbit hs1 hα) t) g := by
@@ -186,7 +184,6 @@ theorem reflCentCo_eq (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ} (hα 
 noncomputable def reflPhi (lam0 : RateFn G) (s : G) (t : ℝ) (m : ℕ) (α : ℝ) : ℝ :=
   ∑ g : G, reflCentCo lam0 s t α g ^ (2 * m)
 
-set_option linter.unusedDecidableInType false in
 theorem reflPhi_eq (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ} (hα : 0 ≤ α)
     (t : ℝ) (m : ℕ) :
     reflPhi lam0 s t m α = Phi (lam0.addOrbit hs1 hα) t m := by
@@ -239,7 +236,6 @@ theorem hasDerivAt_reflPhi (lam0 : RateFn G) (s : G) (t α : ℝ) (m : ℕ) :
 
 /-! ### The sign of the derivative -/
 
-set_option linter.unusedDecidableInType false in
 /-- **The derivative is nonpositive**, given the pointwise reflection inequality
 at every element of the orbit.
 
@@ -324,7 +320,6 @@ theorem sum_reflCentCo_pow_mul_deriv_nonpos (lam0 : RateFn G) {s : G} (hs1 : s �
 
 /-! ### The step -/
 
-set_option linter.unusedDecidableInType false in
 /-- **The power sum is antitone in the orbit rate**, given the reflection
 inequality at every element of the orbit and at every nonnegative rate.
 
@@ -362,7 +357,6 @@ theorem antitoneOn_reflPhi (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {t : ℝ}
   exact mul_nonpos_of_nonneg_of_nonpos (by positivity) hsum
 
 omit [Fintype G] in
-set_option linter.unusedDecidableInType false in
 /-- Adding `0` on an orbit changes nothing. -/
 theorem RateFn.addOrbit_zero (lam : RateFn G) {s : G} (hs1 : s ≠ 1) :
     lam.addOrbit hs1 (le_refl (0 : ℝ)) = lam :=
@@ -370,7 +364,6 @@ theorem RateFn.addOrbit_zero (lam : RateFn G) {s : G} (hs1 : s ≠ 1) :
     rw [RateFn.addOrbit_apply]
     split <;> simp
 
-set_option linter.unusedDecidableInType false in
 /-- **Raising the rate on one inverse orbit does not increase the power sum**,
 given the reflection inequality at every element of the orbit.
 

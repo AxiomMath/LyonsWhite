@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
-import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.Fourier.FiniteAbelian.PontryaginDuality
+public import Mathlib.Analysis.Fourier.FiniteAbelian.Orthogonality
+public import Lyons.Meta.Tag
 
 /-!
 # The Fourier layer over an arbitrary finite abelian group
@@ -59,12 +61,14 @@ The general-`A` convolution `dconv` and the induction `dft_pow_dominated` are
 the convolution.
 -/
 
+@[expose] public section
+
 namespace Lyons.AddCharFourier
 
 open Finset
 open scoped ComplexConjugate
 
-variable {A : Type*} [AddCommGroup A] [Fintype A] [DecidableEq A]
+variable {A : Type*} [AddCommGroup A] [Fintype A]
 
 /-- The **unnormalized Fourier transform** on a finite abelian group:
 `f̂(χ) = ∑ a, f a * χ a`. Matches the source's convention and Mathlib's
@@ -85,22 +89,23 @@ private theorem card_ne_zero : (Fintype.card A : ℂ) ≠ 0 :=
 A thin wrapper on `AddChar.sum_apply_eq_ite`; the general-`A` analogue of
 `ZMod.sum_stdAddChar_mul`. -/
 @[lyons_tag "lem_char_orthogonality"]
-theorem sum_char_apply (a : A) :
+theorem sum_char_apply [DecidableEq A] (a : A) :
     ∑ χ : AddChar A ℂ, χ a = if a = 0 then (Fintype.card A : ℂ) else 0 :=
   AddChar.sum_apply_eq_ite a
 
 /-- Orthogonality in the form the double-sum manipulations below consume: the
 character is evaluated at a difference, and the sum over the dual detects the
 diagonal. -/
-private theorem sum_char_sub (a b : A) :
+private theorem sum_char_sub [DecidableEq A] (a b : A) :
     ∑ χ : AddChar A ℂ, χ (a - b) = if a - b = 0 then (Fintype.card A : ℂ) else 0 :=
   sum_char_apply (a - b)
 
+omit [Fintype A] in
 /-- On a finite group, `χ a * conj (χ b) = χ (a - b)`. This replaces
 `ZMod.conj_stdAddChar`, which read the same fact off the explicit root-of-unity
 form of `ZMod.stdAddChar`; here it comes from `AddChar.map_neg_eq_conj`, which
 holds because the values of a character on a finite group are roots of unity. -/
-private theorem char_mul_conj (χ : AddChar A ℂ) (a b : A) :
+private theorem char_mul_conj [Finite A] (χ : AddChar A ℂ) (a b : A) :
     (χ a) * conj (χ b) = χ (a - b) := by
   rw [← AddChar.map_neg_eq_conj, ← AddChar.map_add_eq_mul, sub_eq_add_neg]
 
@@ -137,9 +142,9 @@ theorem sum_dft_mul_conj (f g : A → ℂ) :
   rw [Finset.sum_congr rfl fun a _ ↦ step a, Finset.mul_sum]
   refine Finset.sum_congr rfl fun a _ ↦ ?_
   rw [Finset.sum_eq_single a]
-  · rw [sub_self, if_pos rfl]
+  · rw [sub_self, ite_eq_left rfl]
   · intro b _ hb
-    rw [if_neg (by simpa [sub_eq_zero] using (Ne.symm hb)), zero_mul]
+    rw [ite_eq_right (by simpa [sub_eq_zero] using (Ne.symm hb)), zero_mul]
   · intro h; exact absurd (Finset.mem_univ a) h
 
 /-- **Parseval's identity.** The general-`A` form of `ZMod.sum_norm_sq_dft`,
@@ -199,9 +204,9 @@ theorem dft_mul (f g : A → ℂ) (χ : AddChar A ℂ) :
       Finset.sum_congr rfl fun a _ ↦ step a, dft_apply, Finset.mul_sum]
     refine Finset.sum_congr rfl fun a _ ↦ ?_
     rw [Finset.sum_eq_single a]
-    · rw [sub_self, if_pos rfl]; ring
+    · rw [sub_self, ite_eq_left rfl]; ring
     · intro b _ hb
-      rw [if_neg (by simpa [sub_eq_zero] using (Ne.symm hb)), zero_mul]
+      rw [ite_eq_right (by simpa [sub_eq_zero] using (Ne.symm hb)), zero_mul]
     · intro h; exact absurd (Finset.mem_univ a) h
   rw [key, inv_mul_cancel_left₀ card_ne_zero]
 

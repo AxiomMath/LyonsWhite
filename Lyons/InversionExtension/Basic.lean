@@ -3,9 +3,13 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.GroupTheory.SpecificGroups.Dihedral
-import Mathlib.Tactic.Abel
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.GroupTheory.SpecificGroups.Dihedral
+public import Mathlib.Algebra.Group.Equiv.Defs
+public import Mathlib.Tactic.Abel
+public import Lyons.Definitions
+public import Lyons.Meta.Tag
 
 /-!
 # The inversion extension `G_{A,z}`
@@ -50,23 +54,9 @@ inclusion `InvExt.incl`, and `τ` for `b`, so that `ι a * τ = refl a` by
 multiplication table.
 -/
 
+@[expose] public section
+
 variable {A : Type*}
-
-/-- The **inversion extension** of an abelian group `A` by an element `z`.
-`rot a` is the element `a ∈ A`; `refl a` is `a * b`.
-
-The `Mul`, `One`, `Inv` and `Group` instances below equip this inductive with
-the multiplication of the presentation: `rot_mul_rot` and `rot_mul_refl` are the
-two cases of multiplying on the left by an element of `A`, `refl_mul_rot` and
-`refl_mul_refl` the two cases of multiplying on the left by an element outside
-it. -/
-@[lyons_tag "def_inversion_extension"]
-inductive InvExt (A : Type*) (z : A)
-  /-- The element `a` of the abelian subgroup. -/
-  | rot : A → InvExt A z
-  /-- The element `a * b`, outside the abelian subgroup. -/
-  | refl : A → InvExt A z
-  deriving DecidableEq
 
 /-- The inclusion `ι : A → G_{A,z}` of the abelian subgroup, `ι a = a`.
 
@@ -81,24 +71,6 @@ namespace InvExt
 section Defs
 
 variable [AddCommGroup A] {z : A}
-
-/-- Multiplication, read off the presentation: `b a = a⁻¹ b` and `b² = z`. -/
-def mulTable : InvExt A z → InvExt A z → InvExt A z
-  | rot a, rot a' => rot (a + a')
-  | rot a, refl a' => refl (a + a')
-  | refl a, rot a' => refl (a - a')
-  | refl a, refl a' => rot (a - a' + z)
-
-instance : Mul (InvExt A z) := ⟨mulTable⟩
-
-instance : One (InvExt A z) := ⟨rot 0⟩
-
-/-- Inversion: `(a)⁻¹ = -a` and `(a * b)⁻¹ = z * a * b`. -/
-def invMap : InvExt A z → InvExt A z
-  | rot a => rot (-a)
-  | refl a => refl (a + z)
-
-instance : Inv (InvExt A z) := ⟨invMap⟩
 
 /-- **The abelian part is multiplicative**, `ι a * ι a' = ι (a * a')`. -/
 @[lyons_tag "lem_inv_ext_hom", simp]
@@ -139,83 +111,14 @@ theorem two_nsmul_z : (2 : ℕ) • z = 0 := by
 theorem neg_two_zsmul_z : (-2 : ℤ) • z = 0 := by
   rw [show (-2 : ℤ) = -(2 : ℤ) by norm_num, neg_zsmul, two_zsmul_z, neg_zero]
 
--- In the `refl`-thrice case of associativity and the `refl` case of
--- `inv_mul_cancel` the two sides differ by exactly `2z`; `abel` alone cannot
--- close those, so they are routed through `sub_eq_zero` and discharged by
--- `two_zsmul_z`. Every other case is pure `abel`.
 /-- `u - z = u + z`, the only consequence of `2z = 0` the group laws need. -/
 theorem sub_z (u : A) : u - z = u + z := by rw [sub_eq_add_neg, neg_z]
-
-/-- The group structure on `G_{A,z}`.
-
-Every case closes by `congrArg` against a definitional reduction: with all
-constructors known, both sides of each group law reduce to `rot _` or `refl _` by
-unfolding the multiplication table, so all that remains is an identity in `A`.
-The reductions are left implicit rather than routed through the named `*_mul_*`
-equations, which keeps those out of this instance's proof term. -/
-instance : Group (InvExt A z) where
-  mul_assoc x y w := by
-    have hz' : -z = (z : A) := neg_eq_of_add_eq_zero_left hz.out
-    cases x with
-    | rot a =>
-      cases y with
-      | rot a' =>
-        cases w with
-        | rot a'' => exact congrArg rot (by abel)
-        | refl a'' => exact congrArg refl (by abel)
-      | refl a' =>
-        cases w with
-        | rot a'' => exact congrArg refl (by abel)
-        | refl a'' => exact congrArg rot (by abel)
-    | refl a =>
-      cases y with
-      | rot a' =>
-        cases w with
-        | rot a'' => exact congrArg refl (by abel)
-        | refl a'' => exact congrArg rot (by abel)
-      | refl a' =>
-        cases w with
-        | rot a'' => exact congrArg rot (by abel)
-        | refl a'' =>
-          refine congrArg refl ?_
-          rw [show a - (a' - a'' + z) = a - a' + a'' + -z from by abel, hz']
-          abel
-  one_mul x := by
-    cases x with
-    | rot a => exact congrArg rot (zero_add a)
-    | refl a => exact congrArg refl (zero_add a)
-  mul_one x := by
-    cases x with
-    | rot a => exact congrArg rot (add_zero a)
-    | refl a => exact congrArg refl (sub_zero a)
-  inv_mul_cancel x := by
-    cases x with
-    | rot a => exact congrArg rot (neg_add_cancel a)
-    | refl a =>
-      refine congrArg rot ?_
-      rw [show a + z - a + z = z + z from by abel]
-      exact hz.out
 
 end Group
 
 section Card
 
 variable [AddCommGroup A] {z : A}
-
-omit [AddCommGroup A] in
-/-- **Normal form.** The map `A ⊕ A → G_{A,z}` sending `inl a` to `ι a` and
-`inr a` to `ι a * τ` is a bijection.
-
-In the concrete model this is constructor injectivity and disjointness, which is
-why the two round trips are `cases`. -/
-@[lyons_tag "lem_inv_ext_normal_form"]
-def sumEquiv : A ⊕ A ≃ InvExt A z where
-  toFun x := Sum.elim rot refl x
-  invFun x := match x with | rot a => Sum.inl a | refl a => Sum.inr a
-  left_inv x := by cases x <;> rfl
-  right_inv x := by cases x <;> rfl
-
-instance [Fintype A] : Fintype (InvExt A z) := Fintype.ofEquiv (A ⊕ A) sumEquiv
 
 omit [AddCommGroup A] in
 /-- `|G_{A,z}| = 2|A|`: every element is uniquely `a` or `a * b`. -/

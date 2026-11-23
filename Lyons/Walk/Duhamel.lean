@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Lyons.Walk.Kolmogorov
+module
+
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Lyons.Walk.Kolmogorov
 
 /-!
 # Duhamel's formula
@@ -48,6 +50,8 @@ interval integral needs the `NormedAddCommGroup`.
 * `Lyons.duhamel_identity` : the exact integral identity.
 * `Lyons.duhamel_deriv` : Duhamel's formula.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped Norms.Operator

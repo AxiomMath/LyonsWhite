@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Jp
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
+module
+
+public import Lyons.Converse.Jp
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 
 /-!
 # The cosine moments and the negative Fourier coefficient
@@ -59,6 +61,8 @@ hypothesis `Lyons.Converse.RiemannSumAssumption`, because Mathlib's box-integral
 Riemann sums require a continuous integrand, and `J_p ∘ cos` is discontinuous
 exactly at `p = 1`.
 -/
+
+@[expose] public section
 
 open MeasureTheory Set intervalIntegral
 

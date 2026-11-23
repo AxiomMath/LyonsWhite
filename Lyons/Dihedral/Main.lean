@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.Main
-import Lyons.Walk.Relabel
+module
+
+public import Lyons.InversionExtension.Main
+public import Lyons.Walk.Relabel
 
 /-!
 # Even-exponent monotonicity on dihedral groups, in power-sum form
@@ -22,13 +24,14 @@ and the conclusion is carried across `Lyons.InvExt.dihedralEquiv` by
 * `Lyons.sum_abs_centered_pow_le` : monotonicity of the centred power sums.
 -/
 
+@[expose] public section
+
 open Finset DihedralGroup
 
 namespace Lyons
 
 variable {n : ℕ} [NeZero n]
 
-set_option linter.unusedDecidableInType false in
 /-- `Lyons.Phi` as a sum of absolute values: `|p_t^λ(g) - 1/(2n)|^{2m}`, summed
 over the group. -/
 theorem Phi_eq_sum_abs (lam : RateFn (DihedralGroup n)) (t : ℝ) (m : ℕ) :
@@ -40,7 +43,6 @@ theorem Phi_eq_sum_abs (lam : RateFn (DihedralGroup n)) (t : ℝ) (m : ℕ) :
     rw [DihedralGroup.card]; push_cast; ring
   rw [centeredHeatCoeffReal, hcard, pow_mul, ← sq_abs, ← pow_mul]
 
-set_option linter.unusedDecidableInType false in
 /-- **Even-exponent monotonicity on dihedral groups**, in power-sum form.
 
 Proved by relabelling both rate functions along `Lyons.InvExt.dihedralEquiv` and

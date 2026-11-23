@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Moments
-import Mathlib.Algebra.Order.Floor.Ring
-import Mathlib.Data.ZMod.Basic
+module
+
+public import Lyons.Converse.Moments
+public import Mathlib.Algebra.Order.Floor.Ring
+public import Mathlib.Data.ZMod.Basic
 
 /-!
 # A negative exponential sum, conditionally on Riemann-sum convergence
@@ -42,6 +44,8 @@ Oddness of `n` is encoded by writing `n = 2l + 1`, which also supplies the
 `NeZero` instance that `∑ j : ZMod n` needs — an existentially quantified `n`
 cannot carry one.
 -/
+
+@[expose] public section
 
 namespace Lyons.Converse
 

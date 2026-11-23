@@ -3,11 +3,15 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.ConverseCyclic
-import Lyons.InversionExtension.Main
-import Lyons.Objective.TheoremA
+module
+
+public import Lyons.Converse.ConverseCyclic
+public import Lyons.InversionExtension.Main
+public import Lyons.Objective.TheoremA
 
 /-! # Satisfying the formal challenge -/
+
+@[expose] public section
 
 open Finset
 

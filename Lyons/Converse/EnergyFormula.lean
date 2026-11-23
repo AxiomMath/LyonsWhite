@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Energy
-import Lyons.Converse.Sandwich
-import Lyons.Converse.TrigSums
+module
+
+public import Lyons.Converse.Energy
+public import Lyons.Converse.Sandwich
+public import Lyons.Converse.TrigSums
 
 /-!
 # The energy at the test element
@@ -88,6 +90,9 @@ energy — is only `x^θ c x^{1-θ}` at a positive element.
 *The limit is taken along `nhdsWithin 0 (Set.Ioi 0)`.* That filter is the
 notation `𝓝[>] 0`, i.e. `ε → 0⁺`.
 -/
+
+@[expose] public section
+
 open Finset MeasureTheory Real
 
 namespace Lyons.Converse
@@ -269,7 +274,7 @@ theorem tendsto_energy_testElement_div {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n
             * Real.cos (2 * π * (K * (j.val : ℤ) : ℝ) / n)
           + signedPow p (Real.cos (2 * π * (j.val : ℝ) / n))
             * Real.sin (2 * π * (K * (j.val : ℤ) : ℝ) / n)))) :=
-    tendsto_finset_sum _ fun j _ =>
+    tendsto_finsetSum _ fun j _ =>
       (hterm (fun i => Real.cos (2 * π * (K * (i.val : ℤ) : ℝ) / n)) j).add
         (hterm (fun i => Real.sin (2 * π * (K * (i.val : ℤ) : ℝ) / n)) j)
   have hF := (hsum.const_mul ((2 / (n : ℝ)) ^ p)).neg

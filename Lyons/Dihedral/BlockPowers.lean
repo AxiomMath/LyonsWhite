@@ -3,10 +3,12 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Polyrith
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Polyrith
+public import Lyons.Meta.Tag
 
 /-!
 # Eigenvalue powers of a dihedral block, and the scalar inequality
@@ -24,6 +26,8 @@ Elementary real arithmetic feeding the reflection inequality. A self-adjoint
 * `Lyons.bp_nonneg` : all four are nonnegative when `U ≥ w ≥ 0`.
 * `Lyons.scalar_ineq` : `A^k B + A B^k ≤ A^{k+1} + B^{k+1}` for `A, B ≥ 0`.
 -/
+
+@[expose] public section
 
 namespace Lyons
 

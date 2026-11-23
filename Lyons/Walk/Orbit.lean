@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Basic
+module
+
+public import Lyons.Walk.Basic
 
 /-!
 # Inverse orbits, one-rate families, and the centred power sum
@@ -16,6 +18,8 @@ at a time, and `Phi` is the quantity shown to be nonincreasing.
 * `Lyons.invOrbit` : `O s = {s, s⁻¹}`.
 * `Lyons.Phi` : `Φ_m(λ, t) = ∑ g, ‖p_t^λ(g) - 1/|G|‖ ^ (2m)`.
 -/
+
+@[expose] public section
 
 open Finset
 

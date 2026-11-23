@@ -3,12 +3,14 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Analysis.RiemannSum
-import Lyons.Converse.DistDeriv
-import Lyons.Converse.EnergyFormula
-import Lyons.Converse.SandwichLimit
-import Lyons.Objective.TheoremC
-import Lyons.Walk.Realization
+module
+
+public import Lyons.Analysis.RiemannSum
+public import Lyons.Converse.DistDeriv
+public import Lyons.Converse.EnergyFormula
+public import Lyons.Converse.SandwichLimit
+public import Lyons.Objective.TheoremC
+public import Lyons.Walk.Realization
 
 /-!
 # Failure of rate-monotonicity for an inversion extension of a cyclic group
@@ -40,6 +42,8 @@ bookkeeping.
 makes `setOrb` at `τ` a change in one coordinate, and it is why `λ°[1↦β]` may be
 read as "`λ°` with its value at `τ` replaced".
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -73,11 +77,11 @@ theorem setOrb_self (lam : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ} (hα : 0
   refine DFunLike.ext _ _ fun g => ?_
   rw [RateFn.setOrb_apply]
   by_cases h : g ∈ invOrbit s
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     rcases mem_invOrbit.mp h with rfl | rfl
     · exact hval.symm
     · rw [lam.symm, hval]
-  · rw [if_neg h]
+  · rw [ite_eq_right h]
 
 /-- **A positive number strictly below every member of a finite nonempty family
 of positive numbers, and below a given bound.**
@@ -114,7 +118,6 @@ the energy is positive *and* every coefficient is nonzero. The two smallness
 conditions are independent — one comes from a limit, the other from a finite
 minimum — which is why `exists_pos_lt_of_finite` handles both at once. -/
 
-set_option maxHeartbeats 1000000 in
 -- The two character sums are large terms, and `exists_neg_char_sum`'s conclusion
 -- has to be matched cast for cast against `exists_energy_testElement_pos`'s
 -- hypothesis; unifying them exceeds the default budget.
@@ -259,7 +262,7 @@ theorem exists_not_rateMonotonic_invExt {p : ℝ} (hp : 1 < p)
   set α : ℝ := ν τ with hα_def
   have hα : 0 ≤ α := ν.nonneg τ
   have hαpos : 0 < α := by
-    rw [hα_def, hν_def, IsSymmRate.toRateFn_apply, if_neg hτ1]
+    rw [hα_def, hν_def, IsSymmRate.toRateFn_apply, ite_eq_right hτ1]
     exact hlampos τ hτ1
   have hset : ν.setOrb hτ1 hα = ν := setOrb_self ν hτ1 hα rfl
   -- The base rate: `λ°` with the orbit of `τ` zeroed. Named before Step 5 so the
@@ -283,7 +286,7 @@ theorem exists_not_rateMonotonic_invExt {p : ℝ} (hp : 1 < p)
   -- `λ` takes the value `α` at `τ`, which is what makes `μ ≥ λ`.
   have hmu_apply : ∀ s, mu s = if s ∈ invOrbit τ then β else lam s := fun _ => rfl
   have hlamτ : lam τ = α := by
-    rw [hα_def, hν_def, IsSymmRate.toRateFn_apply, if_neg hτ1]
+    rw [hα_def, hν_def, IsSymmRate.toRateFn_apply, ite_eq_right hτ1]
   have hτinv : τ⁻¹ = τ := refl_inv_self rfl 0
   have hmusymm : IsSymmRate mu := by
     refine ⟨fun s => ?_, fun s => ?_⟩
@@ -293,34 +296,34 @@ theorem exists_not_rateMonotonic_invExt {p : ℝ} (hp : 1 < p)
       · simpa [h] using hlam.nonneg s
     · rw [hmu_apply, hmu_apply]
       by_cases h : s ∈ invOrbit τ
-      · rw [if_pos (inv_mem_invOrbit h), if_pos h]
-      · rw [if_neg fun hc => h (by simpa using inv_mem_invOrbit hc), if_neg h,
+      · rw [ite_eq_left (inv_mem_invOrbit h), ite_eq_left h]
+      · rw [ite_eq_right fun hc => h (by simpa using inv_mem_invOrbit hc), ite_eq_right h,
           hlam.symm]
   have hle : ∀ s, lam s ≤ mu s := by
     intro s
     rw [hmu_apply]
     by_cases h : s ∈ invOrbit τ
-    · rw [if_pos h]
+    · rw [ite_eq_left h]
       rcases mem_invOrbit.mp h with rfl | rfl
       · rw [hlamτ]; exact hβα.le
       · rw [hτinv, hlamτ]; exact hβα.le
-    · rw [if_neg h]
+    · rw [ite_eq_right h]
   -- Raising rates cannot shrink the support, so `μ` is still generating.
   have hgenmu : Generating mu := by
     rw [Generating, ← top_le_iff, ← hgen]
-    exact Subgroup.closure_mono fun s hs => lt_of_lt_of_le hs (hle s)
+    exact Subgroup.closure_mono fun s (hs : 0 < _) => show 0 < mu s from hs.trans_le (hle s)
   -- `μ° = λ°[1↦β]`: both are `β` on the orbit, `λ` off it, and `0` at `1`.
   have hmuset : hmusymm.toRateFn = ν.setOrb hτ1 hβ := by
     refine DFunLike.ext _ _ fun g => ?_
     rw [IsSymmRate.toRateFn_apply, RateFn.setOrb_apply, hν_def]
     by_cases h1 : g = 1
     · subst h1
-      rw [if_pos rfl, if_neg (one_notMem_invOrbit hτ1),
-        IsSymmRate.toRateFn_apply, if_pos rfl]
-    · rw [if_neg h1, hmu_apply]
+      rw [ite_eq_left rfl, ite_eq_right (one_notMem_invOrbit hτ1),
+        IsSymmRate.toRateFn_apply, ite_eq_left rfl]
+    · rw [ite_eq_right h1, hmu_apply]
       by_cases h : g ∈ invOrbit τ
-      · rw [if_pos h, if_pos h]
-      · rw [if_neg h, if_neg h, IsSymmRate.toRateFn_apply, if_neg h1]
+      · rw [ite_eq_left h, ite_eq_left h]
+      · rw [ite_eq_right h, ite_eq_right h, IsSymmRate.toRateFn_apply, ite_eq_right h1]
   -- Step 7: compare the two distances through the two bridges.
   have hbridge : ∀ (γ : ℝ) (hγ : 0 ≤ γ),
       distToUniform p (ν.setOrb hτ1 hγ) 1

@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Matrix.Order
-import Lyons.GroupAlgebra.Commutant
+module
+
+public import Mathlib.Analysis.Matrix.Order
+public import Lyons.GroupAlgebra.Commutant
 
 /-!
 # Fractional powers of positive elements of the group algebra
@@ -31,34 +33,27 @@ working — so the omission is silent until instantiation.
   `θ, θ' > 0`, with no invertibility hypothesis.
 -/
 
+@[expose] public section
+
 open Matrix
 open scoped MatrixOrder ComplexOrder
 
 namespace Lyons
 
-variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
+variable {G : Type*} [Group G] [Fintype G]
 
-omit [DecidableEq G] in
 /-- Positivity of `L x` in the Loewner order is exactly `IsPos x`. -/
 theorem isPos_iff_le (x : MonoidAlgebra ℝ G) : IsPos x ↔ 0 ≤ L x :=
   Matrix.nonneg_iff_posSemidef.symm
 
--- `DecidableEq G` is needed for the `Matrix G G ℂ` ring structure that these
--- statements are about, but Lean sees it used only inside the proof terms. The
--- linter's suggested fix (`open scoped Classical`) would swap in a different
--- decidability instance from the one the surrounding section uses, risking
--- instance mismatch against `Lyons.L`; keeping the section variable is correct
--- here, so the check is disabled for these two declarations only.
-set_option linter.unusedDecidableInType false in
 /-- Fractional powers are positive, at `L x` and with **no** hypothesis on it:
 Mathlib's `CFC.nnrpow_nonneg` needs none, because `nnrpow` is built from `cfcₙ`,
 which preserves the nonnegativity predicate unconditionally. The usual `M ⪰ 0`
 premise is therefore unnecessary here and is not assumed. -/
 theorem mrpow_nonneg (x : MonoidAlgebra ℝ G) (θ : NNReal) :
-    (0 : Matrix G G ℂ) ≤ (L x) ^ θ :=
-  CFC.nnrpow_nonneg
+    open scoped Classical in (0 : Matrix G G ℂ) ≤ (L x) ^ θ :=
+  by classical exact CFC.nnrpow_nonneg
 
-set_option linter.unusedDecidableInType false in
 /-- Fractional powers add, for strictly positive exponents and with **no**
 invertibility hypothesis.
 
@@ -67,7 +62,7 @@ invertibility hypothesis.
 @[lyons_tag "lem_algebra_rpow_add"]
 theorem mrpow_add (x : MonoidAlgebra ℝ G) {θ θ' : NNReal}
     (hθ : 0 < θ) (hθ' : 0 < θ') :
-    (L x) ^ (θ + θ') = (L x) ^ θ * (L x) ^ θ' :=
-  CFC.nnrpow_add hθ hθ'
+    open scoped Classical in (L x) ^ (θ + θ') = (L x) ^ θ * (L x) ^ θ' :=
+  by classical exact CFC.nnrpow_add hθ hθ'
 
 end Lyons

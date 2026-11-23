@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.SpecialFunctions.Exponential
-import Lyons.Walk.Increment
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Exponential
+public import Lyons.Walk.Increment
 
 /-!
 # The transition function is nonnegative
@@ -37,6 +39,8 @@ coefficients go negative.
   entrywise nonnegative.
 * `Lyons.heatCoeffReal_nonneg` : `0 ≤ p_t^λ(g)`.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder Norms.Operator
@@ -100,7 +104,6 @@ theorem exp_smul_one (z : ℂ) :
   ext g h
   by_cases hgh : g = h <;> simp [hgh, Pi.coe_exp]
 
-set_option linter.unusedDecidableInType false in
 /-- The generator splits as a scalar plus a nonnegative part. -/
 theorem smul_L_laplacian_eq (lam : RateFn G) (t : ℝ) :
     -(t : ℂ) • L (laplacian lam)
@@ -112,7 +115,6 @@ theorem smul_L_laplacian_eq (lam : RateFn G) (t : ℝ) :
     Complex.real_smul, Complex.ofReal_neg, Complex.ofReal_mul]
   ring
 
-set_option linter.unusedDecidableInType false in
 /-- **The heat matrix is a positive scalar times the exponential of the jump
 element.** -/
 theorem heatMat_eq_smul_exp_jumpElt (lam : RateFn G) (t : ℝ) :
@@ -126,7 +128,6 @@ theorem heatMat_eq_smul_exp_jumpElt (lam : RateFn G) (t : ℝ) :
 
 /-! ### Nonnegativity -/
 
-set_option linter.unusedDecidableInType false in
 /-- Every entry of the heat matrix is nonnegative, for nonnegative time. -/
 theorem heatMat_entry_nonneg (lam : RateFn G) {t : ℝ} (ht : 0 ≤ t) (g h : G) :
     0 ≤ heatMat lam t g h := by
@@ -140,7 +141,6 @@ theorem heatMat_entry_nonneg (lam : RateFn G) {t : ℝ} (ht : 0 ≤ t) (g h : G)
   rw [← Complex.exp_eq_exp_ℂ, ← Complex.ofReal_exp]
   exact Complex.zero_le_real.mpr (Real.exp_nonneg _)
 
-set_option linter.unusedDecidableInType false in
 /-- **The transition function is nonnegative.**
 
 With `Lyons.sum_heatCoeffReal` this says the coefficients of `h_t^λ` are a

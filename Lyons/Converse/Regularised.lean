@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Positive
-import Lyons.Walk.Centered
+module
+
+public import Lyons.Converse.Positive
+public import Lyons.Walk.Centered
 
 /-!
 # The regularised test element
@@ -55,6 +57,8 @@ condition `n > 2K` is written `2 * K < (n : ℤ)`.
 `Lyons.Converse.isPos_testElement` is, namely in `isPos_regTestElement` and
 `isPosDefOffConst_regTestElement`; the other results do not assume it.
 -/
+
+@[expose] public section
 
 namespace Lyons.Converse
 

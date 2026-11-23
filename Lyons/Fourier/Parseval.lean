@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Fourier.ZMod
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.Fourier.ZMod
+public import Lyons.Meta.Tag
 
 /-!
 # Parseval's identity for the discrete Fourier transform on `ZMod N`
@@ -47,6 +49,8 @@ by `k ↦ -k`, which leaves every statement here invariant: each is a sum over a
 of `ZMod N`, and negation permutes that sum.
 -/
 
+@[expose] public section
+
 open Finset AddChar
 open scoped ComplexConjugate
 
@@ -75,7 +79,7 @@ theorem sum_stdAddChar_mul (m : ZMod N) :
   · subst hm
     simp [mulShift_zero, ZMod.card]
   · have hne : stdAddChar.mulShift m ≠ 1 := (isPrimitive_stdAddChar N) hm
-    rw [AddChar.sum_eq_zero_iff_ne_zero.mpr hne, if_neg hm]
+    rw [AddChar.sum_eq_zero_iff_ne_zero.mpr hne, ite_eq_right hm]
 
 /-- The polarised Parseval identity for `ZMod.dft`.
 
@@ -115,9 +119,9 @@ theorem sum_dft_mul_conj (f g : ZMod N → ℂ) :
   rw [Finset.sum_congr rfl fun j _ ↦ step j, Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ ↦ ?_
   rw [Finset.sum_eq_single j]
-  · rw [sub_self, if_pos rfl]
+  · rw [sub_self, ite_eq_left rfl]
   · intro j' _ hj'
-    rw [if_neg (by simpa [sub_eq_zero] using hj'), zero_mul]
+    rw [ite_eq_right (by simpa [sub_eq_zero] using hj'), zero_mul]
   · intro h; exact absurd (Finset.mem_univ j) h
 
 /-- Parseval's identity for `ZMod.dft`, in the unnormalised convention. Mathlib

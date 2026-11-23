@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Dihedral.BlockPowers
-import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
+module
+
+public import Lyons.Dihedral.BlockPowers
+public import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
 
 /-!
 # The block powers are continuous in the block data
@@ -36,6 +38,8 @@ available, but it no longer has to thread it through the continuity step.
 * `Lyons.continuous_bpAlpha`, `..._bpBeta`, `..._bpGamma`, `..._bpDelta` —
   continuity in `(U, w)` for a fixed exponent.
 -/
+
+@[expose] public section
 
 namespace Lyons
 

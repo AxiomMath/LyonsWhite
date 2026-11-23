@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lean
+module
+
+public meta import Lean
 
 /-!
 # The `lyons_tag` attribute
@@ -13,6 +15,8 @@ statement it realizes. The label is a string literal matching
 `^(def|not|lem|prop|thm)_[A-Za-z0-9_]+$`, and a statement spread over several
 declarations carries the same label on each of them.
 -/
+
+public meta section
 
 open Lean
 

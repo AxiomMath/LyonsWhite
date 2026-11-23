@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.GroupAlgebra.Conj
-import Lyons.GroupAlgebra.Rpow
+module
+
+public import Lyons.GroupAlgebra.Conj
+public import Lyons.GroupAlgebra.Rpow
 
 /-!
 # The square root of a positive group-algebra element
@@ -28,6 +30,8 @@ Staying unital keeps `conjHom_cfc_L` usable.
 * `Lyons.sqrtElt_mul_self` : `sqrtElt x * sqrtElt x = x`.
 * `Lyons.invol_sqrtElt` : `sqrtElt x` is self-adjoint.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped MatrixOrder ComplexOrder

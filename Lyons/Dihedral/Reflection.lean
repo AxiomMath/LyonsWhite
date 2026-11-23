@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Analysis.Holder
-import Lyons.Dihedral.SandwichBlock
+module
+
+public import Lyons.Analysis.Holder
+public import Lyons.Dihedral.SandwichBlock
 
 /-!
 # The reflection inequality
@@ -35,6 +37,8 @@ every rewrite that touches it, and the two forms are interchangeable under
 * `Lyons.sum_coeff_split` : the normal-form split.
 * `Lyons.sum_co_pow_mul_sandwich_le` : the reflection inequality.
 -/
+
+@[expose] public section
 
 open DihedralGroup Finset
 

@@ -3,10 +3,12 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.LinearAlgebra.Matrix.Notation
-import Lyons.Fourier.AddCharBasic
-import Lyons.GroupAlgebra.Sqrt
-import Lyons.InversionExtension.Basic
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Notation
+public import Lyons.Fourier.AddCharBasic
+public import Lyons.GroupAlgebra.Sqrt
+public import Lyons.InversionExtension.Basic
 
 /-!
 # The two-dimensional representations of an inversion extension
@@ -76,6 +78,8 @@ the group algebra (`Lyons.eq_invol_mul_self`, via the functional calculus of
 positive semidefinite matrix. This is the route the dihedral
 `Lyons.rhoAlg_posSemidef` already takes.
 -/
+
+@[expose] public section
 
 open Finset Matrix
 open scoped ComplexConjugate
@@ -160,7 +164,7 @@ theorem Dchi_mul_out (a a' : A) :
     Dchi χ a * (Dchi χ a' * Bchi χ z) = Dchi χ (a + a') * Bchi χ z := by
   rw [← mul_assoc, Dchi_mul]
 
-variable [Fintype A]
+variable [Finite A]
 
 /-- Conjugating a character value negates its argument. The values of a
 character of a *finite* group are roots of unity, which is what makes this
@@ -202,7 +206,7 @@ theorem out_mul_out (hz : z + z = 0) (a a' : A) :
     _ = Dchi χ (a - a') * Dchi χ z := by rw [mul_assoc, Bchi_mul_self hz]
     _ = Dchi χ (a - a' + z) := Dchi_mul ..
 
-omit [Fintype A] in
+omit [Finite A] in
 /-- `Dchi χ c * Bchi χ z` written out. The image of an outside basis element,
 whose four entries the block form reads off. -/
 theorem Dchi_mul_Bchi (c : A) :
@@ -494,8 +498,6 @@ variable (χ) (d) (a : A)
 
 end Entries
 
-variable [DecidableEq A]
-
 /-- Entry `(0,0)` of `ρ_{χ,d}(y)` is `U^y(χ)`. -/
 theorem rhoAlg_entry_00 : rhoAlg χ d y 0 0 = Ublock y χ := by
   classical
@@ -562,6 +564,7 @@ transform, and they are even, which negates the frequency. -/
 @[lyons_tag "lem_U_real"]
 theorem conj_Ublock (x : MonoidAlgebra ℝ (InvExt A z)) (hsa : invol x = x)
     (χ : AddChar A ℂ) : conj (Ublock x χ) = Ublock x χ := by
+  classical
   calc conj (Ublock x χ) = ∑ a : A, uCoeff x a * χ (-a) := by
         rw [Ublock, AddCharFourier.dft_apply, map_sum]
         exact Finset.sum_congr rfl fun a _ ↦ by
@@ -578,7 +581,6 @@ theorem Ublock_ofReal_re (x : MonoidAlgebra ℝ (InvExt A z)) (hsa : invol x = x
     (χ : AddChar A ℂ) : (((Ublock x χ).re : ℝ) : ℂ) = Ublock x χ :=
   Complex.conj_eq_iff_re.mp (conj_Ublock x hsa χ)
 
-omit [DecidableEq A] in
 /-- **The outside transform is twisted by the sign of `z`.**
 
 The reindexing is by `a ↦ za`, a bijection of `A` because `z² = 1`; the
@@ -601,7 +603,6 @@ theorem Vblock_twist (x : MonoidAlgebra ℝ (InvExt A z)) (hsa : invol x = x)
         Finset.sum_congr rfl fun a _ ↦ hterm a
     _ = χ z * Vblock x d χ := by rw [← Finset.mul_sum]; rfl
 
-omit [DecidableEq A] in
 /-- **The outside transform vanishes at an odd character.**
 
 This has no dihedral predecessor: for `D_n` the involution is the neutral
@@ -632,7 +633,7 @@ section Pos
 
 open scoped ComplexOrder MatrixOrder
 
-variable [Fintype A] [DecidableEq A] [Fact (z + z = 0)]
+variable [Fintype A] [Fact (z + z = 0)]
 
 /-- **Representations preserve positivity.**
 
@@ -646,15 +647,10 @@ factorisation `x = x^⋆ x` *inside the group algebra*
 theorem rhoAlg_posSemidef (χ : AddChar A ℂ) (d : A)
     (x : MonoidAlgebra ℝ (InvExt A z)) (hx : IsPos x) :
     (rhoAlg χ d x).PosSemidef := by
+  classical
   rw [eq_invol_mul_self x hx, map_mul, rhoAlg_invol]
   exact Matrix.posSemidef_conjTranspose_mul_self _
 
--- The two `simp` calls below expand a `2 × 2` matrix literal applied to a test
--- vector. Pinning them to `simp only` requires enumerating the `!![…]` entry
--- lemmas, which is brittle; the flexible-tactic style check is therefore
--- disabled for this declaration, not worked around. Same choice as
--- the dihedral `Lyons.Ublock_ge_norm_Vblock`.
-set_option linter.flexible false in
 /-- **Positivity dominates the outside transform.** The source's
 `U ≥ |V| ≥ 0` is this inequality together with `norm_nonneg`.
 
@@ -679,14 +675,14 @@ theorem Ublock_ge_norm_Vblock (χ : AddChar A ℂ) (d : A)
   · -- Only `0 ≤ U` is needed; test against the first basis vector.
     have h0 := hPSD.dotProduct_mulVec_nonneg (![1, 0] : Fin 2 → ℂ)
     rw [hM] at h0
-    simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two] at h0
+    replace h0 : 0 ≤ Ublock x χ := by
+      simpa [Matrix.mulVec, dotProduct, Fin.sum_univ_two] using h0
     rw [hV, norm_zero]
     exact (Complex.nonneg_iff.mp h0).1
   · have hVpos : (0 : ℝ) < ‖Vblock x d χ‖ := norm_pos_iff.mpr hV
     have h := hPSD.dotProduct_mulVec_nonneg
       (![Vblock x d χ / (‖Vblock x d χ‖ : ℂ), -1] : Fin 2 → ℂ)
     rw [hM] at h
-    simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two] at h
     -- `conj V * V = ‖V‖ ^ 2` is what collapses the two off-diagonal terms.
     have hsq : conj (Vblock x d χ) * Vblock x d χ
         = ((‖Vblock x d χ‖ ^ 2 : ℝ) : ℂ) := by
@@ -704,7 +700,9 @@ theorem Ublock_ge_norm_Vblock (χ : AddChar A ℂ) (d : A)
       rw [hsq]
       push_cast
       ring
-    rw [hexp] at h
+    replace h : 0 ≤ 2 * Ublock x χ - 2 * ((‖Vblock x d χ‖ : ℝ) : ℂ) := by
+      rw [← hexp]
+      simpa [Matrix.mulVec, dotProduct, Fin.sum_univ_two] using h
     have hre := (Complex.nonneg_iff.mp h).1
     simp only [Complex.sub_re, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im] at hre

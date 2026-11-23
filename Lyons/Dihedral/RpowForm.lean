@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Dihedral.Spectrum
-import Lyons.Dihedral.BlockPowers
+module
+
+public import Lyons.Dihedral.Spectrum
+public import Lyons.Dihedral.BlockPowers
 
 /-!
 # Fractional powers of a two-by-two dihedral block
@@ -21,6 +23,8 @@ characteristic polynomial or eigenvector computation.
 On a two-point set `t ↦ t ^ θ` agrees with its linear interpolant, and `cfc` of a
 linear function is computed by `cfc_add`, `cfc_const` and `cfc_const_mul_id`.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexConjugate
@@ -53,10 +57,6 @@ theorem blockM_eq (U w : ℝ) (ζ : ℂ) :
   fin_cases i <;> fin_cases j <;>
     simp [blockM, blockS] <;> ring
 
--- The closing `simp` reduces a `smul`-of-matrix identity to a disjunction whose
--- second branch is `abel`-trivial; pinning it to `simp only` would mean listing
--- the `smul`/`sub` normalisation lemmas, so the style check is disabled here.
-set_option linter.flexible false in
 /-- The annihilating product: `(M - μ₊)(M - μ₋) = 0`. -/
 theorem blockM_annihilating {U w : ℝ} {ζ : ℂ} (hζ : ‖ζ‖ = 1) :
     (blockM U w ζ - algebraMap ℝ (Matrix (Fin 2) (Fin 2) ℂ) (U + w)) *
@@ -79,7 +79,7 @@ theorem blockM_annihilating {U w : ℝ} {ζ : ℂ} (hζ : ‖ζ‖ = 1) :
     push_cast
     module
   rw [e1, e2, smul_mul_smul_comm, sub_mul, mul_add, mul_add, hS]
-  simp
+  simp only [mul_one, one_mul, smul_eq_zero, mul_eq_zero, Complex.ofReal_eq_zero, or_self]
   exact Or.inr (by abel)
 
 /-- The spectrum of a dihedral block lies in `{U + w, U - w}`. -/
@@ -168,6 +168,6 @@ theorem blockM_cfc_rpow {U w θ : ℝ} {ζ : ℂ} (hζ : ‖ζ‖ = 1) (hw : 0 �
   fin_cases i <;> fin_cases j <;>
     simp [blockM, blockS, Algebra.algebraMap_eq_smul_one, hc₀, hc₁, bpAlpha,
       bpBeta] <;>
-    try field_simp <;> try ring
+    field_simp <;> ring
 
 end Lyons

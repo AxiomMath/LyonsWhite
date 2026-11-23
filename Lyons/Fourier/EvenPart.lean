@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Fourier.Majorant
+module
+
+public import Lyons.Fourier.Majorant
 
 /-!
 # Even parts and counting norms on `ZMod N`
@@ -22,6 +24,8 @@ import Lyons.Fourier.Majorant
 * `ZMod.evenPart_eq_of_re_dft_eq` : hence equal real parts force equal even parts.
 * `ZMod.sum_mul_evenPart` : an even weight cannot see the odd part of `ψ`.
 -/
+
+@[expose] public section
 
 open Finset AddChar
 open scoped ComplexConjugate

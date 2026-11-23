@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Dihedral.RpowForm
-import Lyons.Dihedral.Sandwich
-import Lyons.GroupAlgebra.Transfer
+module
+
+public import Lyons.Dihedral.RpowForm
+public import Lyons.Dihedral.Sandwich
+public import Lyons.GroupAlgebra.Transfer
 
 /-!
 # The block form of the reflection sandwich
@@ -40,6 +42,8 @@ of a general finite abelian group, and at an arbitrary outside element, in
 * `Lyons.rhoAlg_eq_blockM` : `ρ_k(a)` is a dihedral block.
 * `Lyons.rhoAlg_sandwich` : the block form of the sandwich.
 -/
+
+@[expose] public section
 
 open Matrix DihedralGroup
 open scoped ComplexConjugate ComplexOrder MatrixOrder

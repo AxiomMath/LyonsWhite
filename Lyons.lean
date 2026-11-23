@@ -1,76 +1,79 @@
-import Lyons.Analysis.EventuallyPos
-import Lyons.Analysis.Holder
-import Lyons.Analysis.Imported
-import Lyons.Analysis.RiemannSum
-import Lyons.Converse.Blocks
-import Lyons.Converse.CharSum
-import Lyons.Converse.ConverseCyclic
-import Lyons.Converse.CyclicChar
-import Lyons.Converse.DistDeriv
-import Lyons.Converse.Energy
-import Lyons.Converse.EnergyFormula
-import Lyons.Converse.Jp
-import Lyons.Converse.Moments
-import Lyons.Converse.Positive
-import Lyons.Converse.Regularised
-import Lyons.Converse.Sandwich
-import Lyons.Converse.SandwichLimit
-import Lyons.Converse.TestElement
-import Lyons.Converse.TrigSums
-import Lyons.Dihedral.Block
-import Lyons.Dihedral.BlockPowers
-import Lyons.Dihedral.BlockPowersCont
-import Lyons.Dihedral.Main
-import Lyons.Dihedral.Pos
-import Lyons.Dihedral.Reflection
-import Lyons.Dihedral.Rho
-import Lyons.Dihedral.RpowForm
-import Lyons.Dihedral.Sandwich
-import Lyons.Dihedral.SandwichBlock
-import Lyons.Dihedral.Spectrum
-import Lyons.Fourier.AddCharBasic
-import Lyons.Fourier.AddCharEvenPart
-import Lyons.Fourier.EvenPart
-import Lyons.Fourier.Inversion
-import Lyons.Fourier.Majorant
-import Lyons.Fourier.Parseval
-import Lyons.GroupAlgebra.Basic
-import Lyons.GroupAlgebra.Commutant
-import Lyons.GroupAlgebra.Conj
-import Lyons.GroupAlgebra.Imported
-import Lyons.GroupAlgebra.Positivity
-import Lyons.GroupAlgebra.Rpow
-import Lyons.GroupAlgebra.Sqrt
-import Lyons.GroupAlgebra.Transfer
-import Lyons.InversionExtension.Basic
-import Lyons.InversionExtension.Blocks
-import Lyons.InversionExtension.CoeffSplit
-import Lyons.InversionExtension.Injective
-import Lyons.InversionExtension.Main
-import Lyons.InversionExtension.ReflectionStep
-import Lyons.InversionExtension.Rotation
-import Lyons.InversionExtension.Sandwich
-import Lyons.Meta.Dictionary
-import Lyons.Meta.Tag
-import Lyons.Objective.RateMonotonic
-import Lyons.Objective.TheoremA
-import Lyons.Objective.TheoremC
-import Lyons.Objective.Transport
-import Lyons.Walk.Basic
-import Lyons.Walk.Centered
-import Lyons.Walk.CenteredRpow
-import Lyons.Walk.CentralStep
-import Lyons.Walk.Contract
-import Lyons.Walk.Duhamel
-import Lyons.Walk.Heat
-import Lyons.Walk.Increment
-import Lyons.Walk.Kolmogorov
-import Lyons.Walk.Laplacian
-import Lyons.Walk.Nonneg
-import Lyons.Walk.Orbit
-import Lyons.Walk.OrbitInduction
-import Lyons.Walk.OrbitStep
-import Lyons.Walk.Real
-import Lyons.Walk.Realization
-import Lyons.Walk.ReflectionDeriv
-import Lyons.Walk.Relabel
+module  -- shake: keep-all --deprecated_module: ignore
+
+public import Lyons.Analysis.EventuallyPos
+public import Lyons.Analysis.Holder
+public import Lyons.Analysis.Imported
+public import Lyons.Analysis.RiemannSum
+public import Lyons.Converse.Blocks
+public import Lyons.Converse.CharSum
+public import Lyons.Converse.ConverseCyclic
+public import Lyons.Converse.CyclicChar
+public import Lyons.Converse.DistDeriv
+public import Lyons.Converse.Energy
+public import Lyons.Converse.EnergyFormula
+public import Lyons.Converse.Jp
+public import Lyons.Converse.Moments
+public import Lyons.Converse.Positive
+public import Lyons.Converse.Regularised
+public import Lyons.Converse.Sandwich
+public import Lyons.Converse.SandwichLimit
+public import Lyons.Converse.TestElement
+public import Lyons.Converse.TrigSums
+public import Lyons.Definitions
+public import Lyons.Dihedral.Block
+public import Lyons.Dihedral.BlockPowers
+public import Lyons.Dihedral.BlockPowersCont
+public import Lyons.Dihedral.Main
+public import Lyons.Dihedral.Pos
+public import Lyons.Dihedral.Reflection
+public import Lyons.Dihedral.Rho
+public import Lyons.Dihedral.RpowForm
+public import Lyons.Dihedral.Sandwich
+public import Lyons.Dihedral.SandwichBlock
+public import Lyons.Dihedral.Spectrum
+public import Lyons.Fourier.AddCharBasic
+public import Lyons.Fourier.AddCharEvenPart
+public import Lyons.Fourier.EvenPart
+public import Lyons.Fourier.Inversion
+public import Lyons.Fourier.Majorant
+public import Lyons.Fourier.Parseval
+public import Lyons.GroupAlgebra.Basic
+public import Lyons.GroupAlgebra.Commutant
+public import Lyons.GroupAlgebra.Conj
+public import Lyons.GroupAlgebra.Imported
+public import Lyons.GroupAlgebra.Positivity
+public import Lyons.GroupAlgebra.Rpow
+public import Lyons.GroupAlgebra.Sqrt
+public import Lyons.GroupAlgebra.Transfer
+public import Lyons.InversionExtension.Basic
+public import Lyons.InversionExtension.Blocks
+public import Lyons.InversionExtension.CoeffSplit
+public import Lyons.InversionExtension.Injective
+public import Lyons.InversionExtension.Main
+public import Lyons.InversionExtension.ReflectionStep
+public import Lyons.InversionExtension.Rotation
+public import Lyons.InversionExtension.Sandwich
+public import Lyons.Meta.Dictionary
+public import Lyons.Meta.Tag
+public import Lyons.Objective.RateMonotonic
+public import Lyons.Objective.TheoremA
+public import Lyons.Objective.TheoremC
+public import Lyons.Objective.Transport
+public import Lyons.Walk.Basic
+public import Lyons.Walk.Centered
+public import Lyons.Walk.CenteredRpow
+public import Lyons.Walk.CentralStep
+public import Lyons.Walk.Contract
+public import Lyons.Walk.Duhamel
+public import Lyons.Walk.Heat
+public import Lyons.Walk.Increment
+public import Lyons.Walk.Kolmogorov
+public import Lyons.Walk.Laplacian
+public import Lyons.Walk.Nonneg
+public import Lyons.Walk.Orbit
+public import Lyons.Walk.OrbitInduction
+public import Lyons.Walk.OrbitStep
+public import Lyons.Walk.Real
+public import Lyons.Walk.Realization
+public import Lyons.Walk.ReflectionDeriv
+public import Lyons.Walk.Relabel

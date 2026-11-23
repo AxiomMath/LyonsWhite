@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.Positive
-import Lyons.Converse.Regularised
-import Lyons.InversionExtension.Sandwich
+module
+
+public import Lyons.Converse.Positive
+public import Lyons.Converse.Regularised
+public import Lyons.InversionExtension.Sandwich
 
 /-!
 # The reflection sandwich at the test element, and the regularised blocks
@@ -79,6 +81,8 @@ sandwich is `τ ξ` and its
 block at `χ_K` is `-iε ≠ 0`, so the identity genuinely fails. Strictness is what
 gives `0 ^ θ = 0` and `0 ^ (1-θ) = 0`, hence `α = β` and `γ = δ`.
 -/
+
+@[expose] public section
 
 namespace Lyons.Converse
 
@@ -230,45 +234,45 @@ theorem sandwich_testElement {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n : ℤ)) {
         (0 : ZMod n) (testElement n K ε)
         = !![((1 : ℝ) : ℂ), (1 : ℂ) * ((1 : ℝ) : ℂ);
              conj ((1 : ℂ) * ((1 : ℝ) : ℂ)), ((1 : ℝ) : ℂ)] := by
-      rw [rhoAlg_testElement hK hn ε k, if_pos h1]
+      rw [rhoAlg_testElement hK hn ε k, ite_eq_left h1]
       norm_num
     rw [rhoAlg_sandwich_testElement hK hn hε hθ hθ' k zero_le_one (by norm_num) hb,
-      if_pos h1]
+      ite_eq_left h1]
     ext i j
     fin_cases i <;> fin_cases j <;> norm_num
-  rw [if_neg h1]
+  rw [ite_eq_right h1]
   -- `k = K`: the phase is `i`, and the block dies.
   by_cases hK' : k = (K : ZMod n)
   · have hb : InvExtBlock.rhoAlg (cyclicAddChar (ZMod.card n) exists_zsmul_one k)
         (0 : ZMod n) (testElement n K ε)
         = !![((ε : ℝ) : ℂ), Complex.I * ((ε : ℝ) : ℂ);
              conj (Complex.I * ((ε : ℝ) : ℂ)), ((ε : ℝ) : ℂ)] := by
-      rw [rhoAlg_testElement hK hn ε k, if_neg h1, if_pos hK']
+      rw [rhoAlg_testElement hK hn ε k, ite_eq_right h1, ite_eq_left hK']
       ext i j
       fin_cases i <;> fin_cases j <;> simp [Complex.real_smul] <;> ring
-    rw [rhoAlg_sandwich_testElement hK hn hε hθ hθ' k hε (by simp) hb, if_pos hK']
+    rw [rhoAlg_sandwich_testElement hK hn hε hθ hθ' k hε (by simp) hb, ite_eq_left hK']
     ext i j
     fin_cases i <;> fin_cases j <;> simp [Complex.conj_I, Complex.I_sq]
-  rw [if_neg hK']
+  rw [ite_eq_right hK']
   -- `k = -K`: the phase is `-i`, and the block dies for the same reason.
   by_cases hmK : k = -(K : ZMod n)
   · have hb : InvExtBlock.rhoAlg (cyclicAddChar (ZMod.card n) exists_zsmul_one k)
         (0 : ZMod n) (testElement n K ε)
         = !![((ε : ℝ) : ℂ), (-Complex.I) * ((ε : ℝ) : ℂ);
              conj ((-Complex.I) * ((ε : ℝ) : ℂ)), ((ε : ℝ) : ℂ)] := by
-      rw [rhoAlg_testElement hK hn ε k, if_neg h1, if_neg hK', if_pos hmK]
+      rw [rhoAlg_testElement hK hn ε k, ite_eq_right h1, ite_eq_right hK', ite_eq_left hmK]
       ext i j
       fin_cases i <;> fin_cases j <;> simp [Complex.real_smul] <;> ring
-    rw [rhoAlg_sandwich_testElement hK hn hε hθ hθ' k hε (by simp) hb, if_pos hmK]
+    rw [rhoAlg_sandwich_testElement hK hn hε hθ hθ' k hε (by simp) hb, ite_eq_left hmK]
     ext i j
     fin_cases i <;> fin_cases j <;> simp [Complex.conj_I, Complex.I_sq]
-  rw [if_neg hmK]
+  rw [ite_eq_right hmK]
   -- Every other `k`: the block of the test element already vanishes.
   have hb : InvExtBlock.rhoAlg (cyclicAddChar (ZMod.card n) exists_zsmul_one k)
       (0 : ZMod n) (testElement n K ε)
       = !![((0 : ℝ) : ℂ), (1 : ℂ) * ((0 : ℝ) : ℂ);
            conj ((1 : ℂ) * ((0 : ℝ) : ℂ)), ((0 : ℝ) : ℂ)] := by
-    rw [rhoAlg_testElement hK hn ε k, if_neg h1, if_neg hK', if_neg hmK]
+    rw [rhoAlg_testElement hK hn ε k, ite_eq_right h1, ite_eq_right hK', ite_eq_right hmK]
     ext i j
     fin_cases i <;> fin_cases j <;> simp
   rw [rhoAlg_sandwich_testElement hK hn hε hθ hθ' k le_rfl (by norm_num) hb]
@@ -397,8 +401,8 @@ theorem rhoAlg_regTestElement {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n : ℤ)) 
       exact h
     have cK : ((K : ZMod n)) ≠ 0 := hcast K (by omega) (by omega)
     rw [rhoAlg_testElement hK hn ε 0,
-      if_neg (by rintro (h | h); exacts [c1 h.symm, c1 (by linear_combination h)]),
-      if_neg fun h => cK h.symm, if_neg fun h => cK (by linear_combination h)]
+      ite_eq_right (by rintro (h | h); exacts [c1 h.symm, c1 (by linear_combination h)]),
+      ite_eq_right fun h => cK h.symm, ite_eq_right fun h => cK (by linear_combination h)]
     ext i j
     fin_cases i <;> fin_cases j <;> simp [Complex.real_smul] <;> ring
   · rw [sub_zero]

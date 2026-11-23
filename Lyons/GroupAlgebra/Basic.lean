@@ -3,12 +3,15 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Algebra.MonoidAlgebra.Defs
-import Mathlib.Data.Complex.Basic
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Data.Finsupp.Basic
-import Mathlib.LinearAlgebra.Matrix.PosDef
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Algebra.MonoidAlgebra.Defs
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Data.Finsupp.Basic
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Lyons.Definitions
+public import Lyons.Meta.Tag
 
 /-!
 # The real group algebra of a finite group, via its left regular representation
@@ -44,6 +47,8 @@ group, so the involution is defined here.
 * `Lyons.L_add`, `Lyons.L_zero` : additivity.
 -/
 
+@[expose] public section
+
 open Finset Matrix
 
 -- `Matrix.PosSemidef` needs an order on the entries, and Complex's order is
@@ -59,10 +64,6 @@ variable {G : Type*}
 `MonoidAlgebra ℝ G` is a structure wrapping `coeff : G →₀ ℝ`. `co x g` is the
 coefficient of `x` at `g`; it exists to keep the statements below readable and
 to isolate the one piece of `Finsupp` plumbing. -/
-
-/-- The coefficient of `x` at `g`. -/
-@[lyons_tag "not_coeff"]
-def co (x : MonoidAlgebra ℝ G) (g : G) : ℝ := x.coeff g
 
 @[simp] theorem co_add (x y : MonoidAlgebra ℝ G) (g : G) :
     co (x + y) g = co x g + co y g := rfl
@@ -172,11 +173,6 @@ def invol [Group G] (x : MonoidAlgebra ℝ G) : MonoidAlgebra ℝ G :=
   simp [co, invol, Finsupp.equivMapDomain_apply]
 
 /-! ### The left regular representation -/
-
-/-- The left regular representation, as a complex `G × G` matrix. -/
-@[lyons_tag "def_left_regular"]
-def L [Group G] (x : MonoidAlgebra ℝ G) : Matrix G G ℂ :=
-  Matrix.of fun g h => ((co x (g * h⁻¹) : ℝ) : ℂ)
 
 @[simp] theorem L_apply [Group G] (x : MonoidAlgebra ℝ G) (g h : G) :
     L x g h = ((co x (g * h⁻¹) : ℝ) : ℂ) := rfl

@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
 # A positive one-sided limit is positive near the endpoint
@@ -27,6 +29,8 @@ The obvious route, "the limit is positive so the function eventually is", needs 
 strict bound to hand to `Filter.Tendsto.eventually_const_lt`; `L / 2` is the
 usual choice. Any constant in `(0, L)` would serve.
 -/
+
+@[expose] public section
 
 open Filter Topology
 

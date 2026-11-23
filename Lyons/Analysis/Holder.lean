@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.MeanInequalities
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.MeanInequalities
+public import Lyons.Meta.Tag
 
 /-!
 # Hölder's inequality in counting-norm form
@@ -32,6 +34,8 @@ exponents `2m` and `2m - 1` is `k + 2 = 2m`.
 * `Lyons.rootSum_pow` : it recovers the sum on raising to the `(k+2)`-th power.
 * `Lyons.sum_pow_succ_mul_le` : Hölder.
 -/
+
+@[expose] public section
 
 open Finset
 

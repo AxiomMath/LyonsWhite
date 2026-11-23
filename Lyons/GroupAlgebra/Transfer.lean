@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.LinearAlgebra.Lagrange
-import Lyons.GroupAlgebra.Sqrt
+module
+
+public import Mathlib.LinearAlgebra.Lagrange
+public import Lyons.GroupAlgebra.Sqrt
 
 /-!
 # Transferring the functional calculus to another representation
@@ -44,6 +46,8 @@ never exhibited — it exists only inside these proofs.
 * `Lyons.algHom_eq_cfc_of_L` : if `L y = cfc f (L x)`, then `φ y = cfc f (φ x)`
   for any `ℝ`-algebra map `φ` into a matrix algebra.
 -/
+
+@[expose] public section
 
 open Matrix
 

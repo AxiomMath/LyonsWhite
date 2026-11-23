@@ -3,10 +3,12 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Analysis.Holder
-import Lyons.Dihedral.SandwichBlock
-import Lyons.Fourier.AddCharEvenPart
-import Lyons.InversionExtension.Blocks
+module
+
+public import Lyons.Analysis.Holder
+public import Lyons.Dihedral.SandwichBlock
+public import Lyons.Fourier.AddCharEvenPart
+public import Lyons.InversionExtension.Blocks
 
 /-!
 # The block form of the reflection sandwich over an inversion extension
@@ -65,6 +67,8 @@ the declarations it also brings into scope are shadowed by the
   `Lyons.InvExtBlock.rhoAlg_sandwich_odd` : the two block forms of the sandwich,
   at an even and at an odd character.
 -/
+
+@[expose] public section
 
 open Finset Matrix
 open scoped ComplexConjugate ComplexOrder MatrixOrder

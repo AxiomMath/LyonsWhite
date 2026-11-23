@@ -3,14 +3,16 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Analysis.Calculus.Deriv.Slope
-import Mathlib.Analysis.Complex.Trigonometric
-import Mathlib.Analysis.Convex.Jensen
-import Mathlib.Analysis.Convex.Mul
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Analysis.Calculus.Deriv.Slope
+public import Mathlib.Analysis.Complex.Trigonometric
+public import Mathlib.Analysis.Convex.Jensen
+public import Mathlib.Analysis.Convex.Mul
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
+public import Lyons.Meta.Tag
 
 /-!
 # Real-analysis inputs imported from Mathlib
@@ -51,6 +53,8 @@ step.
 * `Lyons.tendsto_intervalIntegral_of_dominated` : dominated convergence along
   `𝓝[T] 0` with a constant dominating function.
 -/
+
+@[expose] public section
 
 open Filter MeasureTheory
 open scoped Topology

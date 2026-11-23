@@ -3,7 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Nonneg
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.Comp
+public import Lyons.Walk.Nonneg
 
 /-!
 # The Kolmogorov forward equation
@@ -34,6 +37,8 @@ contributes nothing, so the two agree.
 * `Lyons.hasDerivAt_heatCoeffReal_forward` : the forward equation.
 -/
 
+@[expose] public section
+
 open Matrix
 -- `NormedSpace.exp`'s derivative lemma needs the scoped `NormedRing` on matrices.
 open scoped Norms.Operator
@@ -44,7 +49,6 @@ variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
 /-! ### The initial condition -/
 
-set_option linter.unusedDecidableInType false in
 /-- **The walk starts at the identity.** -/
 @[lyons_tag "lem_kolmogorov_forward"]
 theorem heatCoeffReal_zero (lam : RateFn G) (g : G) :
@@ -67,7 +71,6 @@ theorem hasDerivAt_exp_smul (A : Matrix G G ℂ) (t : ℝ) :
     HasDerivAt (fun u : ℝ => NormedSpace.exp (u • A)) (NormedSpace.exp (t • A) * A) t :=
   hasDerivAt_exp_smul_const A t
 
-set_option linter.unusedDecidableInType false in
 /-- The heat matrix as `exp (t • A)` with a *fixed* `A`, which is the shape
 `Lyons.hasDerivAt_exp_smul` differentiates. -/
 theorem heatMat_eq_exp_smul (lam : RateFn G) (t : ℝ) :
@@ -77,7 +80,6 @@ theorem heatMat_eq_exp_smul (lam : RateFn G) (t : ℝ) :
   ext g h
   simp [Complex.real_smul]
 
-set_option linter.unusedDecidableInType false in
 /-- The semigroup is differentiable in time, with derivative `H_t · (-Δ_λ)`. -/
 theorem hasDerivAt_heatMat (lam : RateFn G) (t : ℝ) :
     HasDerivAt (fun u : ℝ => heatMat lam u)
@@ -94,13 +96,11 @@ noncomputable def entryCLM (g h : G) : Matrix G G ℂ →L[ℝ] ℂ :=
   (ContinuousLinearMap.proj h : (G → ℂ) →L[ℝ] ℂ).comp
     (ContinuousLinearMap.proj g : (G → G → ℂ) →L[ℝ] (G → ℂ))
 
-set_option linter.unusedDecidableInType false in
 theorem hasDerivAt_heatMat_entry (lam : RateFn G) (t : ℝ) (g h : G) :
     HasDerivAt (fun u : ℝ => heatMat lam u g h)
       ((heatMat lam t * (-(L (laplacian lam)))) g h) t :=
   (entryCLM g h).hasFDerivAt.comp_hasDerivAt t (hasDerivAt_heatMat lam t)
 
-set_option linter.unusedDecidableInType false in
 theorem hasDerivAt_heatCoeffReal (lam : RateFn G) (t : ℝ) (g : G) :
     HasDerivAt (fun u : ℝ => heatCoeffReal lam u g)
       (((heatMat lam t * (-(L (laplacian lam)))) g 1).re) t :=
@@ -108,7 +108,6 @@ theorem hasDerivAt_heatCoeffReal (lam : RateFn G) (t : ℝ) (g : G) :
 
 /-! ### Identifying the derivative -/
 
-set_option linter.unusedDecidableInType false in
 /-- The derivative, in the paper's form. The right-translated argument
 `g * s⁻¹` is produced by `Lyons.heatMat_conv`, not assumed. -/
 theorem deriv_heatCoeffReal_eq (lam : RateFn G) (t : ℝ) (g : G) :
@@ -146,7 +145,6 @@ theorem deriv_heatCoeffReal_eq (lam : RateFn G) (t : ℝ) (g : G) :
       Finset.sum_sub_distrib, ← Finset.sum_mul]
   rw [hL, hR]
 
-set_option linter.unusedDecidableInType false in
 /-- **The Kolmogorov forward equation.** -/
 @[lyons_tag "lem_kolmogorov_forward"]
 theorem hasDerivAt_heatCoeffReal_forward (lam : RateFn G) (t : ℝ) (g : G) :

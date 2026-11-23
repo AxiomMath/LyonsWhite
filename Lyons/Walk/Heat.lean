@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Laplacian
+module
+
+public import Lyons.Walk.Laplacian
 
 /-!
 # The heat element, and absorption of the uniform element
@@ -35,6 +37,8 @@ augmentation is not available on the matrix side where the exponential lives.
 * `Lyons.heatElt_absorb` : `h_t^λ π_G = π_G h_t^λ = π_G`.
 * `Lyons.sum_heatCoeffReal` : `∑ g, p_t^λ(g) = 1`.
 -/
+
+@[expose] public section
 
 open Matrix
 -- Needed for the `NormedRing` instance that `NormedSpace.exp`'s lemmas require;
@@ -78,8 +82,7 @@ theorem mul_exp_of_mul_eq_zero {A B : Matrix G G ℂ} (h : B * A = 0) :
 
 /-! ### The uniform element on the left -/
 
-set_option linter.unusedDecidableInType false in
-set_option linter.unusedSectionVars false in
+omit [DecidableEq G] in
 /-- Coefficients of `π_G * x`, the mirror of `Lyons.coe_mul_uniform`. -/
 theorem coe_uniform_mul (x : MonoidAlgebra ℝ G) (g : G) :
     co (uniform G * x) g = (∑ h : G, co x h) * (Fintype.card G : ℝ)⁻¹ := by
@@ -88,14 +91,14 @@ theorem coe_uniform_mul (x : MonoidAlgebra ℝ G) (g : G) :
   simp only [coe_uniform]
   rw [← Finset.mul_sum, mul_comm]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 /-- **Absorption on the left.** -/
 theorem uniform_mul_absorb (x : MonoidAlgebra ℝ G) :
     uniform G * x = (∑ h : G, co x h) • uniform G := by
   refine co_injective fun g ↦ ?_
   rw [coe_uniform_mul, co_smul, coe_uniform]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 /-- The Laplacian has coefficient sum zero: each generator contributes `λ s` at
 the identity and `-λ s` at `s`. -/
 theorem sum_coe_laplacian (lam : RateFn G) : ∑ g : G, co (laplacian lam) g = 0 := by
@@ -106,20 +109,19 @@ theorem sum_coe_laplacian (lam : RateFn G) : ∑ g : G, co (laplacian lam) g = 0
     Finset.sum_ite_eq' Finset.univ (1 : G) (fun _ => ∑ s : G, lam s)]
   simp
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 /-- The Laplacian annihilates the uniform element, on both sides. -/
 theorem laplacian_mul_uniform (lam : RateFn G) :
     laplacian lam * uniform G = 0 := by
   rw [uniform_absorb, sum_coe_laplacian, zero_smul]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 theorem uniform_mul_laplacian (lam : RateFn G) :
     uniform G * laplacian lam = 0 := by
   rw [uniform_mul_absorb, sum_coe_laplacian, zero_smul]
 
 /-! ### The total rate and the jump element -/
 
-set_option linter.unusedSectionVars false in
 /-- The **total rate** `Λ_λ = ∑ s, λ s`. -/
 @[lyons_tag "def_total_rate"]
 noncomputable def totalRate (lam : RateFn G) : ℝ := ∑ s : G, lam s
@@ -129,8 +131,7 @@ noncomputable def totalRate (lam : RateFn G) : ℝ := ∑ s : G, lam s
 noncomputable def jumpElt (lam : RateFn G) : MonoidAlgebra ℝ G :=
   ∑ s : G, MonoidAlgebra.single s (lam s)
 
-set_option linter.unusedDecidableInType false in
-set_option linter.unusedSectionVars false in
+omit [DecidableEq G] in
 @[simp] theorem co_jumpElt (lam : RateFn G) (g : G) : co (jumpElt lam) g = lam g := by
   classical
   rw [jumpElt, co_sum, Finset.sum_eq_single g]
@@ -138,11 +139,12 @@ set_option linter.unusedSectionVars false in
   · intro b _ hb; simp [Ne.symm hb]
   · intro hcon; exact absurd (Finset.mem_univ g) hcon
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 /-- **The Laplacian splits as total rate minus jump element.** -/
 @[lyons_tag "lem_laplacian_split"]
 theorem laplacian_eq_totalRate_sub_jumpElt (lam : RateFn G) :
     laplacian lam = totalRate lam • (1 : MonoidAlgebra ℝ G) - jumpElt lam := by
+  classical
   refine co_injective fun g ↦ ?_
   rw [coe_laplacian, co_sub, co_smul, co_one, co_jumpElt, totalRate]
   by_cases hg : g = 1 <;> simp [hg]

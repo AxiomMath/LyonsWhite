@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Fourier.AddCharBasic
+module
+
+public import Lyons.Fourier.AddCharBasic
 
 /-!
 # Even parts over an arbitrary finite abelian group
@@ -43,6 +45,8 @@ Negating the frequency is done by reindexing the *group* variable by `a ↦ -a`
 and using `AddChar.map_neg_eq_conj`, rather than by the explicit root-of-unity
 form of `ZMod.stdAddChar` that the cyclic proof reads `conj (stdAddChar x)` off.
 -/
+
+@[expose] public section
 
 open Finset
 open scoped ComplexConjugate

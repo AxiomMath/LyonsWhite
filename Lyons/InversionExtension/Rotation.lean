@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.Basic
-import Lyons.Walk.CentralStep
+module
+
+public import Lyons.InversionExtension.Basic
+public import Lyons.Walk.CentralStep
 
 /-!
 # Increments inside the abelian part are central, and raising them is free
@@ -36,6 +38,8 @@ which is group-generic.
 * `Lyons.Phi_addOrbit_rot_le` : increasing a rate inside the abelian part does
   not increase the power sum.
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -75,15 +79,15 @@ theorem conj_mem_invOrbit_rot {a : A} {x : InvExt A z}
 
 variable [Fintype A]
 
-set_option linter.unusedFintypeInType false in
+omit [Fintype A] in
 /-- **Increments inside the abelian part are central.** -/
 @[lyons_tag "lem_rotation_central"]
-theorem orbitElt_central_rot (a : A) (y : MonoidAlgebra ℝ (InvExt A z)) :
+theorem orbitElt_central_rot [Finite A] (a : A) (y : MonoidAlgebra ℝ (InvExt A z)) :
     orbitElt (InvExt.rot a : InvExt A z) * y
       = y * orbitElt (InvExt.rot a : InvExt A z) :=
+  have := Fintype.ofFinite A
   orbitElt_central_of_conj_stable (fun _ hx g => conj_mem_invOrbit_rot hx g) y
 
-set_option linter.unusedDecidableInType false in
 /-- **Increasing a rate inside the abelian part does not increase the power
 sum.**
 

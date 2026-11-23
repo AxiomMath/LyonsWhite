@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.GroupAlgebra.Basic
-import Lyons.InversionExtension.Basic
+module
+
+public import Lyons.GroupAlgebra.Basic
+public import Lyons.InversionExtension.Basic
 
 /-!
 # Paired coefficient sums over an inversion extension
@@ -54,6 +56,8 @@ in any case. This is the same economy as in `Lyons.sum_coeff_split`, which does
 not assume `Ψ 0 = 0` because the sums are taken over the whole index type rather
 than over supports.
 -/
+
+@[expose] public section
 
 open Finset
 

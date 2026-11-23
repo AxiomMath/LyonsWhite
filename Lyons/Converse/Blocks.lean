@@ -3,9 +3,11 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.CyclicChar
-import Lyons.Converse.TestElement
-import Lyons.InversionExtension.Blocks
+module
+
+public import Lyons.Converse.CyclicChar
+public import Lyons.Converse.TestElement
+public import Lyons.InversionExtension.Blocks
 
 /-!
 # The Fourier data of the test element
@@ -43,6 +45,8 @@ in `ℤ/n`, which is right for the orthogonality relation
 exponents `k ± 1` and `k ± K` are produced by splitting cosines and sines into
 `ω_n^{±qj}` and are naturally integers.
 -/
+
+@[expose] public section
 
 namespace Lyons.Converse
 
@@ -379,76 +383,78 @@ theorem rhoAlg_testElement {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n : ℤ)) (ε
   rcases eq_or_ne k 1 with rfl | hk1
   · have hu : InvExtBlock.Ublock (testElement n K ε)
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (1 : ZMod n)) = 1 := by
-      rw [Ublock_testElement, if_neg fun h => c2 (by linear_combination h), if_pos rfl,
-        if_neg fun h => cKp (by linear_combination h),
-        if_neg fun h => cKm (by linear_combination -h)]
+      rw [Ublock_testElement, ite_eq_right fun h => c2 (by linear_combination h), ite_eq_left rfl,
+        ite_eq_right fun h => cKp (by linear_combination h),
+        ite_eq_right fun h => cKm (by linear_combination -h)]
       ring
     have hv : InvExtBlock.Vblock (testElement n K ε) 0
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (1 : ZMod n)) = 1 := by
-      rw [Vblock_testElement, if_neg fun h => c2 (by linear_combination h), if_pos rfl,
-        if_neg fun h => cKp (by linear_combination h),
-        if_neg fun h => cKm (by linear_combination -h)]
+      rw [Vblock_testElement, ite_eq_right fun h => c2 (by linear_combination h), ite_eq_left rfl,
+        ite_eq_right fun h => cKp (by linear_combination h),
+        ite_eq_right fun h => cKm (by linear_combination -h)]
       ring
-    rw [rhoAlg_testElement_of K ε 1 hu hv, if_pos (Or.inl rfl)]
+    rw [rhoAlg_testElement_of K ε 1 hu hv, ite_eq_left (Or.inl rfl)]
     simp
   rcases eq_or_ne k (-1) with rfl | hkm1
   · have hu : InvExtBlock.Ublock (testElement n K ε)
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (-1 : ZMod n)) = 1 := by
-      rw [Ublock_testElement, if_pos rfl, if_neg fun h => c2 (by linear_combination -h),
-        if_neg fun h => cKm (by linear_combination h),
-        if_neg fun h => cKp (by linear_combination -h)]
+      rw [Ublock_testElement, ite_eq_left rfl, ite_eq_right fun h => c2 (by linear_combination -h),
+        ite_eq_right fun h => cKm (by linear_combination h),
+        ite_eq_right fun h => cKp (by linear_combination -h)]
       ring
     have hv : InvExtBlock.Vblock (testElement n K ε) 0
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (-1 : ZMod n)) = 1 := by
-      rw [Vblock_testElement, if_pos rfl, if_neg fun h => c2 (by linear_combination -h),
-        if_neg fun h => cKm (by linear_combination h),
-        if_neg fun h => cKp (by linear_combination -h)]
+      rw [Vblock_testElement, ite_eq_left rfl, ite_eq_right fun h => c2 (by linear_combination -h),
+        ite_eq_right fun h => cKm (by linear_combination h),
+        ite_eq_right fun h => cKp (by linear_combination -h)]
       ring
-    rw [rhoAlg_testElement_of K ε (-1) hu hv, if_pos (Or.inr rfl)]
+    rw [rhoAlg_testElement_of K ε (-1) hu hv, ite_eq_left (Or.inr rfl)]
     simp
-  rw [if_neg (by rintro (h | h) <;> [exact hk1 h; exact hkm1 h])]
+  rw [ite_eq_right (by rintro (h | h) <;> [exact hk1 h; exact hkm1 h])]
   rcases eq_or_ne k (K : ZMod n) with rfl | hkK
   · have hu : InvExtBlock.Ublock (testElement n K ε)
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (K : ZMod n)) = (ε : ℂ) := by
-      rw [Ublock_testElement, if_neg fun h => cKp (by linear_combination h),
-        if_neg fun h => cKm (by linear_combination h),
-        if_neg fun h => c2K (by linear_combination h), if_pos rfl]
+      rw [Ublock_testElement, ite_eq_right fun h => cKp (by linear_combination h),
+        ite_eq_right fun h => cKm (by linear_combination h),
+        ite_eq_right fun h => c2K (by linear_combination h), ite_eq_left rfl]
       ring
     have hv : InvExtBlock.Vblock (testElement n K ε) 0
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (K : ZMod n)) = (ε : ℂ) * Complex.I := by
-      rw [Vblock_testElement, if_neg fun h => cKp (by linear_combination h),
-        if_neg fun h => cKm (by linear_combination h),
-        if_neg fun h => c2K (by linear_combination h), if_pos rfl]
+      rw [Vblock_testElement, ite_eq_right fun h => cKp (by linear_combination h),
+        ite_eq_right fun h => cKm (by linear_combination h),
+        ite_eq_right fun h => c2K (by linear_combination h), ite_eq_left rfl]
       ring
-    rw [rhoAlg_testElement_of K ε (K : ZMod n) hu hv, if_pos rfl]
+    rw [rhoAlg_testElement_of K ε (K : ZMod n) hu hv, ite_eq_left rfl]
     ext i j
     fin_cases i <;> fin_cases j <;> simp
-  rw [if_neg hkK]
+  rw [ite_eq_right hkK]
   rcases eq_or_ne k (-(K : ZMod n)) with rfl | hkmK
   · have hu : InvExtBlock.Ublock (testElement n K ε)
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (-(K : ZMod n))) = (ε : ℂ) := by
-      rw [Ublock_testElement, if_neg fun h => cKm (by linear_combination -h),
-        if_neg fun h => cKp (by linear_combination -h), if_pos rfl,
-        if_neg fun h => c2K (by linear_combination -h)]
+      rw [Ublock_testElement, ite_eq_right fun h => cKm (by linear_combination -h),
+        ite_eq_right fun h => cKp (by linear_combination -h), ite_eq_left rfl,
+        ite_eq_right fun h => c2K (by linear_combination -h)]
       ring
     have hv : InvExtBlock.Vblock (testElement n K ε) 0
         (cyclicAddChar (ZMod.card n) exists_zsmul_one (-(K : ZMod n)))
           = -((ε : ℂ) * Complex.I) := by
-      rw [Vblock_testElement, if_neg fun h => cKm (by linear_combination -h),
-        if_neg fun h => cKp (by linear_combination -h), if_pos rfl,
-        if_neg fun h => c2K (by linear_combination -h)]
+      rw [Vblock_testElement, ite_eq_right fun h => cKm (by linear_combination -h),
+        ite_eq_right fun h => cKp (by linear_combination -h), ite_eq_left rfl,
+        ite_eq_right fun h => c2K (by linear_combination -h)]
       ring
-    rw [rhoAlg_testElement_of K ε (-(K : ZMod n)) hu hv, if_pos rfl]
+    rw [rhoAlg_testElement_of K ε (-(K : ZMod n)) hu hv, ite_eq_left rfl]
     ext i j
     fin_cases i <;> fin_cases j <;> simp
-  rw [if_neg hkmK]
+  rw [ite_eq_right hkmK]
   have hu : InvExtBlock.Ublock (testElement n K ε)
       (cyclicAddChar (ZMod.card n) exists_zsmul_one k) = 0 := by
-    rw [Ublock_testElement, if_neg hkm1, if_neg hk1, if_neg hkmK, if_neg hkK]
+    rw [Ublock_testElement, ite_eq_right hkm1, ite_eq_right hk1,
+      ite_eq_right hkmK, ite_eq_right hkK]
     ring
   have hv : InvExtBlock.Vblock (testElement n K ε) 0
       (cyclicAddChar (ZMod.card n) exists_zsmul_one k) = 0 := by
-    rw [Vblock_testElement, if_neg hkm1, if_neg hk1, if_neg hkmK, if_neg hkK]
+    rw [Vblock_testElement, ite_eq_right hkm1, ite_eq_right hk1,
+      ite_eq_right hkmK, ite_eq_right hkK]
     ring
   rw [rhoAlg_testElement_of K ε k hu hv]
   ext i j

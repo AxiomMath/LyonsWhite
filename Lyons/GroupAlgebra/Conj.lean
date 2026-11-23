@@ -3,7 +3,9 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.GroupAlgebra.Commutant
+module
+
+public import Lyons.GroupAlgebra.Commutant
 
 /-!
 # Entrywise conjugation, and realness of functional-calculus images
@@ -33,6 +35,8 @@ Mathlib does not appear to provide for matrices.
 * `Lyons.conjHom_cfc_L` : conjugation fixes `cfc f (L x)`.
 * `Lyons.cfc_L_im_eq_zero` : the entries of `cfc f (L x)` are real.
 -/
+
+@[expose] public section
 
 open Matrix
 

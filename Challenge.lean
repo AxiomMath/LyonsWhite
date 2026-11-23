@@ -1,1 +1,3 @@
-import Challenge.Basic
+module
+
+public import Challenge.Basic

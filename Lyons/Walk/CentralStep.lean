@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Contract
-import Lyons.Walk.Centered
+module
+
+public import Lyons.Walk.Contract
+public import Lyons.Walk.Centered
 
 /-!
 # Raising a rate on a central orbit does not increase the power sum
@@ -38,6 +40,8 @@ coefficients are nonnegative by `Lyons.heatCoeffReal_nonneg` and sum to one by
 * `Lyons.Phi_eq_sum_co` : `Phi` in terms of the centred element's coefficients.
 * `Lyons.Phi_addOrbit_le_of_central` : the central-orbit step.
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -86,11 +90,11 @@ theorem co_invOrbitSum (s g : G) :
   classical
   rw [invOrbitSum, co_sum]
   by_cases hg : g ∈ invOrbit s
-  · rw [if_pos hg, Finset.sum_eq_single g]
+  · rw [ite_eq_left hg, Finset.sum_eq_single g]
     · simp
     · intro b _ hb; simp [Ne.symm hb]
     · intro hcon; exact absurd hg hcon
-  · rw [if_neg hg, Finset.sum_eq_zero]
+  · rw [ite_eq_right hg, Finset.sum_eq_zero]
     intro b hb
     have hne : g ≠ b := fun hcon => hg (by rw [hcon]; exact hb)
     simp [hne]
@@ -101,16 +105,17 @@ theorem orbitElt_eq (s : G) :
     orbitElt s = (invOrbit s).card • (1 : MonoidAlgebra ℝ G) - invOrbitSum s := by
   rw [orbitElt, invOrbitSum, Finset.sum_sub_distrib, Finset.sum_const]
 
-set_option linter.unusedFintypeInType false in
+omit [Fintype G] in
 /-- **An inverse orbit stable under conjugation has a central orbit sum.**
 
 A sum over a conjugation-stable set is conjugation-invariant, and that is exactly
 what commuting with every group element — hence, by linearity, with every element
 of `ℝ[G]` — amounts to. -/
-theorem invOrbitSum_central_of_conj_stable {s : G}
+theorem invOrbitSum_central_of_conj_stable [Finite G] {s : G}
     (hstable : ∀ a ∈ invOrbit s, ∀ g : G, g * a * g⁻¹ ∈ invOrbit s)
     (y : MonoidAlgebra ℝ G) : invOrbitSum s * y = y * invOrbitSum s := by
   classical
+  have := Fintype.ofFinite G
   refine co_injective fun g ↦ ?_
   rw [co_mul', co_mul]
   have hL : ∀ u : G, co (invOrbitSum s) u * co y (u⁻¹ * g)
@@ -128,9 +133,9 @@ theorem invOrbitSum_central_of_conj_stable {s : G}
   congr 1
   group
 
-set_option linter.unusedFintypeInType false in
+omit [Fintype G] in
 /-- **An inverse orbit stable under conjugation has a central orbit element.** -/
-theorem orbitElt_central_of_conj_stable {s : G}
+theorem orbitElt_central_of_conj_stable [Finite G] {s : G}
     (hstable : ∀ a ∈ invOrbit s, ∀ g : G, g * a * g⁻¹ ∈ invOrbit s)
     (y : MonoidAlgebra ℝ G) : orbitElt s * y = y * orbitElt s := by
   rw [orbitElt_eq, sub_mul, mul_sub, smul_mul_assoc, one_mul, mul_smul_comm, mul_one,
@@ -144,13 +149,11 @@ section Central
 
 variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
-set_option linter.unusedDecidableInType false in
 /-- The Laplacian of the single-orbit rate function is `c ζ_s`. -/
 theorem laplacian_zero_addOrbit {s : G} (hs1 : s ≠ 1) {c : ℝ} (hc : 0 ≤ c) :
     laplacian ((0 : RateFn G).addOrbit hs1 hc) = c • orbitElt s := by
   rw [laplacian_addOrbit, laplacian_zero, zero_add]
 
-set_option linter.unusedDecidableInType false in
 /-- `Phi` in terms of the centred element's coefficients. -/
 theorem Phi_eq_sum_co (lam : RateFn G) (t : ℝ) (m : ℕ) :
     Phi lam t m = ∑ g : G, (co (centeredElt lam t) g) ^ (2 * m) := by
@@ -161,7 +164,6 @@ variable {s : G} (hcentral : ∀ y : MonoidAlgebra ℝ G, orbitElt s * y = y * o
 
 include hcentral
 
-set_option linter.unusedDecidableInType false in
 /-- The heat element of a **central** orbit increment factors. -/
 theorem heatElt_addOrbit_of_central (lam : RateFn G) (hs1 : s ≠ 1) {c : ℝ}
     (hc : 0 ≤ c) (t : ℝ) :
@@ -181,7 +183,6 @@ theorem heatElt_addOrbit_of_central (lam : RateFn G) (hs1 : s ≠ 1) {c : ℝ}
   congr 2
   abel_nf
 
-set_option linter.unusedDecidableInType false in
 /-- Centring commutes with the factorisation: absorption removes the extra
 `π_G`. -/
 theorem centeredElt_addOrbit_of_central (lam : RateFn G) (hs1 : s ≠ 1) {c : ℝ}
@@ -191,7 +192,6 @@ theorem centeredElt_addOrbit_of_central (lam : RateFn G) (hs1 : s ≠ 1) {c : �
   rw [centeredElt, centeredElt, heatElt_addOrbit_of_central hcentral lam hs1 hc t,
     mul_sub, heatElt_mul_uniform]
 
-set_option linter.unusedDecidableInType false in
 /-- **Raising the rate on a central orbit does not increase the power sum.**
 
 Nothing about the group is used; the centrality of `ζ_s` is supplied by the

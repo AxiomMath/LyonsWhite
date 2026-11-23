@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.Basic
-import Lyons.Objective.Transport
+module
+
+public import Lyons.InversionExtension.Basic
+public import Lyons.Objective.Transport
 
 /-!
 # Moving the counterexample onto the dihedral group
@@ -42,6 +44,8 @@ the proof of `of_mulEquiv` already inverts one.
 * `Lyons.exists_not_rateMonotonic_dihedral_of_invExt` — the transport, in the
   existential shape `Lyons.not_rateMonotonic_dihedral_of_not_even` consumes.
 -/
+
+@[expose] public section
 
 namespace Lyons
 

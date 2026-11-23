@@ -3,11 +3,13 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Analysis.EventuallyPos
-import Lyons.Analysis.Imported
-import Lyons.Converse.Energy
-import Lyons.Converse.Sandwich
-import Lyons.Dihedral.BlockPowersCont
+module
+
+public import Lyons.Analysis.EventuallyPos
+public import Lyons.Analysis.Imported
+public import Lyons.Converse.Energy
+public import Lyons.Converse.Sandwich
+public import Lyons.Dihedral.BlockPowersCont
 
 /-!
 # The block data of the regularised element, and its dependence on `ς`
@@ -47,6 +49,9 @@ identity matrix contributes `ς` to the `(0,0)` entry and nothing to `(1,0)`, so
 `Lyons.InvExt.b`. The hypotheses on `K` and `n` are inherited from
 `rhoAlg_regTestElement` as `2 ≤ K` and `2 * K < n`.
 -/
+
+@[expose] public section
+
 open Matrix Complex
 open scoped ComplexConjugate
 
@@ -56,7 +61,7 @@ variable {n : ℕ} [NeZero n]
 
 /-- The character `χ_k` of the cyclic group, as this development spells it. A
 local abbreviation to keep the statements below readable. -/
-private noncomputable abbrev chi (k : ZMod n) : AddChar (ZMod n) ℂ :=
+noncomputable abbrev chi (k : ZMod n) : AddChar (ZMod n) ℂ :=
   cyclicAddChar (ZMod.card n) exists_zsmul_one k
 
 /-- **The abelian transform of the regularised element**, explicitly.
@@ -113,8 +118,7 @@ it is stated at that generality. -/
 
 section StepOne
 
-variable {A : Type*} [AddCommGroup A] [Fintype A] {z : A} [Fact (z + z = 0)]
-  [DecidableEq A]
+variable {A : Type*} [AddCommGroup A] [Fintype A] {z : A}
 
 /-- **Coefficientwise convergence follows from blockwise convergence.**
 
@@ -161,7 +165,7 @@ theorem tendsto_co_of_tendsto_blocks {l : Filter ℝ}
         (nhds ((Fintype.card A : ℂ)⁻¹
           * ∑ ψ : AddChar A ℂ, T y₀ ψ * conj (ψ a))) := by
     intro a T hT
-    exact (tendsto_finset_sum _ fun ψ _ => (hT ψ).mul_const _).const_mul _
+    exact (tendsto_finsetSum _ fun ψ _ => (hT ψ).mul_const _).const_mul _
   -- `Filter.tendsto_ofReal_iff` transfers the ℂ-valued convergence back to ℝ
   -- directly. Composing with `Complex.continuous_re` instead leaves a
   -- `(↑r).re` that `simpa` would then have to unwind, which is where an earlier
@@ -275,11 +279,11 @@ both being affine in `ς` up to an absolute value. -/
 
 /-- The real abelian transform of the regularised element at `χ_k`. Real because
 the element is self-adjoint (`invol_regTestElement`), so `conj_Ublock` applies. -/
-private noncomputable def Ureg (K : ℤ) (ε : ℝ) (k : ZMod n) (ς : ℝ) : ℝ :=
+noncomputable def Ureg (K : ℤ) (ε : ℝ) (k : ZMod n) (ς : ℝ) : ℝ :=
   (InvExtBlock.Ublock (regTestElement n K ε ς) (chi k)).re
 
 /-- The modulus of the outside transform of the regularised element at `χ_k`. -/
-private noncomputable def wreg (K : ℤ) (ε : ℝ) (k : ZMod n) (ς : ℝ) : ℝ :=
+noncomputable def wreg (K : ℤ) (ε : ℝ) (k : ZMod n) (ς : ℝ) : ℝ :=
   ‖InvExtBlock.Vblock (regTestElement n K ε ς) (0 : ZMod n) (chi k)‖
 
 /-- **`U(ς)` is continuous**, being `ς/2` at the trivial character and `U(0) + ς`
@@ -288,12 +292,12 @@ theorem continuous_Ureg {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n : ℤ)) (ε : 
     (k : ZMod n) : Continuous (Ureg (n := n) K ε k) := by
   by_cases hk : k = 0
   · have h : Ureg (n := n) K ε k = fun ς : ℝ => ς / 2 := funext fun ς => by
-      rw [Ureg, Ublock_regTestElement hK hn ε ς k, if_pos hk]; simp
+      rw [Ureg, Ublock_regTestElement hK hn ε ς k, ite_eq_left hk]; simp
     rw [h]; fun_prop
   · have h : Ureg (n := n) K ε k
         = fun ς : ℝ => (InvExtBlock.Ublock (testElement n K ε) (chi k)).re + ς :=
       funext fun ς => by
-        rw [Ureg, Ublock_regTestElement hK hn ε ς k, if_neg hk]; simp
+        rw [Ureg, Ublock_regTestElement hK hn ε ς k, ite_eq_right hk]; simp
     rw [h]; fun_prop
 
 /-- **`w(ς)` is continuous**, being `|ς/2|` at the trivial character and constant
@@ -310,13 +314,13 @@ theorem continuous_wreg {K : ℤ} (hK : 2 ≤ K) (hn : 2 * K < (n : ℤ)) (ε : 
       have h : (fun ς : ℝ =>
             InvExtBlock.Vblock (regTestElement n K ε ς) (0 : ZMod n) (chi 0))
           = fun ς : ℝ => ((-(ς / 2) : ℝ) : ℂ) := funext fun ς => by
-        rw [Vblock_regTestElement hK hn ε ς 0, if_pos rfl]
+        rw [Vblock_regTestElement hK hn ε ς 0, ite_eq_left rfl]
       rw [h]; fun_prop
     · have h : (fun ς : ℝ =>
             InvExtBlock.Vblock (regTestElement n K ε ς) (0 : ZMod n) (chi k))
           = fun _ : ℝ =>
             InvExtBlock.Vblock (testElement n K ε) (0 : ZMod n) (chi k) :=
-        funext fun ς => by rw [Vblock_regTestElement hK hn ε ς k, if_neg hk]
+        funext fun ς => by rw [Vblock_regTestElement hK hn ε ς k, ite_eq_right hk]
       rw [h]; fun_prop
   exact hV.norm
 
@@ -522,7 +526,7 @@ private theorem exists_zeta_uniform {n : ℕ} [NeZero n] {K : ℤ} (hK : 2 ≤ K
     refine ⟨-1, by simp, fun ς hς => ?_⟩
     have hv : InvExtBlock.Vblock (regTestElement n K ε ς) (0 : ZMod n) (chi 0)
         = ((-(ς / 2) : ℝ) : ℂ) := by
-      rw [Vblock_regTestElement hK hn ε ς 0, if_pos rfl]
+      rw [Vblock_regTestElement hK hn ε ς 0, ite_eq_left rfl]
     have hw : wreg (n := n) K ε 0 ς = ς / 2 := by
       rw [wreg, hv, Complex.norm_real, Real.norm_eq_abs, abs_neg,
         abs_of_nonneg (by linarith : (0:ℝ) ≤ ς / 2)]
@@ -535,7 +539,7 @@ private theorem exists_zeta_uniform {n : ℕ} [NeZero n] {K : ℤ} (hK : 2 ≤ K
     refine ⟨ζ, hζ, fun ς _ => ?_⟩
     have hv : InvExtBlock.Vblock (regTestElement n K ε ς) (0 : ZMod n) (chi k)
         = InvExtBlock.Vblock (testElement n K ε) (0 : ZMod n) (chi k) := by
-      rw [Vblock_regTestElement hK hn ε ς k, if_neg hk]
+      rw [Vblock_regTestElement hK hn ε ς k, ite_eq_right hk]
     have hw : wreg (n := n) K ε k ς
         = ‖InvExtBlock.Vblock (testElement n K ε) (0 : ZMod n) (chi k)‖ := by
       rw [wreg, hv]
@@ -671,7 +675,7 @@ Three convergences multiply out, one per factor:
   `p = 1`, so `hne` is not a convenience: without it the composition fails at
   exactly the exponent the failure of rate-monotonicity cares most about.
 
-The sum is over a `Fintype`, so `tendsto_finset_sum` finishes. -/
+The sum is over a `Fintype`, so `tendsto_finsetSum` finishes. -/
 theorem tendsto_energyIntegrand {n : ℕ} [NeZero n] {K : ℤ} (hK : 2 ≤ K)
     (hn : 2 * K < (n : ℤ)) {ε : ℝ} (hε : 0 ≤ ε) (p : ℝ)
     (hne : ∀ g : InvExt (ZMod n) 0, co (testElement n K ε) g ≠ 0)
@@ -688,7 +692,7 @@ theorem tendsto_energyIntegrand {n : ℕ} [NeZero n] {K : ℤ} (hK : 2 ≤ K)
           * (co (sandwich (testElement n K ε)
                 (InvExt.b : InvExt (ZMod n) 0) θ) g
               - co (testElement n K ε) g))) := by
-  refine tendsto_finset_sum _ fun g _ => ?_
+  refine tendsto_finsetSum _ fun g _ => ?_
   have hco := tendsto_co_regTestElement (n := n) K ε g
   have hsw := tendsto_co_sandwich_regTestElement (n := n) hK hn hε hθ hθ' g
   have hJ : Filter.Tendsto

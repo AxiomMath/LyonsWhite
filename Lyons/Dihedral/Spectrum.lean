@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
-import Lyons.Meta.Tag
+module
+
+public import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
+public import Lyons.Meta.Tag
 
 /-!
 # Bounding a spectrum by an annihilating polynomial
@@ -22,6 +24,8 @@ the spectrum of the image, which is `spectrum ℝ 0 = {0}`.
 
 * `Lyons.spectrum_subset_pair_of_mul_eq_zero`
 -/
+
+@[expose] public section
 
 namespace Lyons
 

@@ -3,10 +3,12 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.InversionExtension.ReflectionStep
-import Lyons.InversionExtension.Rotation
-import Lyons.Objective.RateMonotonic
-import Lyons.Walk.OrbitInduction
+module
+
+public import Lyons.InversionExtension.ReflectionStep
+public import Lyons.InversionExtension.Rotation
+public import Lyons.Objective.RateMonotonic
+public import Lyons.Walk.OrbitInduction
 
 /-!
 # Every inversion extension is rate-monotonic at an even exponent
@@ -45,6 +47,8 @@ carries them, and are not used.
 * `Lyons.rateMonotonic_invExt_even` : `(G_{A,z}, 2m)` is rate-monotonic.
 -/
 
+@[expose] public section
+
 open Finset
 
 namespace Lyons
@@ -52,7 +56,6 @@ namespace Lyons
 variable {A : Type*} [AddCommGroup A] [Fintype A] [DecidableEq A] {z : A}
   [Fact (z + z = 0)]
 
-set_option linter.unusedDecidableInType false in
 /-- **Raising the rate on one inverse orbit does not increase the power sum.** -/
 @[lyons_tag "lem_single_orbit_step"]
 theorem Phi_addOrbit_le (lam : RateFn (InvExt A z)) {s : InvExt A z} (hs1 : s ≠ 1)
@@ -66,13 +69,11 @@ theorem Phi_addOrbit_le (lam : RateFn (InvExt A z)) {s : InvExt A z} (hs1 : s �
     -- outside it, the whole sandwich apparatus is consumed
     exact Phi_addOrbit_refl_le lam d hc ht hm
 
-set_option linter.unusedDecidableInType false in
 /-- The one-orbit step, packaged for `Lyons.Phi_le_of_le_of_step`. -/
 theorem oneOrbitStep_invExt {t : ℝ} (ht : 0 ≤ t) {m : ℕ} (hm : 1 ≤ m) :
     OneOrbitStep (InvExt A z) t m :=
   fun lam _ hs1 _ hc => Phi_addOrbit_le lam hs1 hc ht hm
 
-set_option linter.unusedDecidableInType false in
 /-- **Increasing every rate does not increase the power sum.** -/
 @[lyons_tag "lem_orbit_induction"]
 theorem Phi_le_of_le (lam mu : RateFn (InvExt A z))
@@ -80,7 +81,6 @@ theorem Phi_le_of_le (lam mu : RateFn (InvExt A z))
     (hm : 1 ≤ m) : Phi mu t m ≤ Phi lam t m :=
   Phi_le_of_le_of_step (oneOrbitStep_invExt ht hm) lam mu hle
 
-set_option linter.unusedDecidableInType false in
 /-- **`(G_{A,z}, 2m)` is rate-monotonic.**
 
 Raising every rate cannot increase the `ℓ^{2m}` distance of the walk on the
@@ -93,7 +93,7 @@ theorem rateMonotonic_invExt_even (m : ℕ) (hm : 1 ≤ m) :
   have key : Phi hmu.toRateFn t m ≤ Phi hlam.toRateFn t m :=
     Phi_le_of_le hlam.toRateFn hmu.toRateFn
       (fun g hg => by
-        rw [IsSymmRate.toRateFn_apply, IsSymmRate.toRateFn_apply, if_neg hg, if_neg hg]
+        rw [IsSymmRate.toRateFn_apply, IsSymmRate.toRateFn_apply, ite_eq_right hg, ite_eq_right hg]
         exact hle g) ht hm
   have hexp : (2 * (m : ℝ)) = ((2 * m : ℕ) : ℝ) := by push_cast; ring
   have hPhi : ∀ nu : RateFn (InvExt A z),

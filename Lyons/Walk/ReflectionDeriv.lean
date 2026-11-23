@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Walk.Duhamel
-import Lyons.Walk.CenteredRpow
+module
+
+public import Lyons.Walk.Duhamel
+public import Lyons.Walk.CenteredRpow
 
 /-!
 # Differentiating the centred element in the rate on one inverse orbit
@@ -79,6 +81,8 @@ the sandwich shape is one rewrite away wherever it is wanted.
   powers of `a_α`.
 -/
 
+@[expose] public section
+
 open Matrix
 open scoped Norms.Operator
 
@@ -86,9 +90,10 @@ namespace Lyons
 
 variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 
-set_option linter.unusedFintypeInType false in
-theorem L_orbitElt (s : G) :
+omit [Fintype G] in
+theorem L_orbitElt [Finite G] (s : G) :
     L (orbitElt s) = ∑ x ∈ invOrbit s, (1 - L (MonoidAlgebra.single x (1 : ℝ))) := by
+  have := Fintype.ofFinite G
   rw [orbitElt, ← Lalg_apply, map_sum]
   exact Finset.sum_congr rfl fun x _ => by rw [Lalg_apply, L_sub, L_one]
 
@@ -100,7 +105,6 @@ theorem L_reflLap (lam0 : RateFn G) (s : G) (α : ℝ) :
     L (reflLap lam0 s α) = L (laplacian lam0) + α • L (orbitElt s) := by
   rw [reflLap, L_add, L_smul]
 
-set_option linter.unusedDecidableInType false in
 /-- It agrees with the Laplacian of the orbit increment for a nonnegative rate.
 
 The whole apparatus is built on `RateFn.addOrbit` rather than on
@@ -116,14 +120,13 @@ theorem reflLap_eq_laplacian_addOrbit (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1)
 noncomputable def reflHeatMat (lam0 : RateFn G) (s : G) (t α : ℝ) : Matrix G G ℂ :=
   NormedSpace.exp ((-t) • L (reflLap lam0 s α))
 
-set_option linter.unusedDecidableInType false in
 theorem reflHeatMat_eq (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1) {α : ℝ}
     (hα : 0 ≤ α) (t : ℝ) :
     reflHeatMat lam0 s t α = heatMat (lam0.addOrbit hs1 hα) t := by
   rw [reflHeatMat, reflLap_eq_laplacian_addOrbit lam0 hs1 hα, heatMat]
   congr 1
-  ext g h
-  simp [Complex.real_smul]
+  ext i j
+  simp
 
 /-- **Duhamel, specialised to the orbit rate.** -/
 theorem hasDerivAt_reflHeatMat (lam0 : RateFn G) (s : G) (t α : ℝ) :
@@ -169,7 +172,7 @@ theorem uniform_mul_exp_reflLap (lam0 : RateFn G) (s : G) (α u : ℝ) :
   rw [mul_smul_comm, ← L_mul, uniform_mul_reflLap, L_zero, smul_zero]
 
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 theorem uniform_mul_single (b : G) :
     uniform G * MonoidAlgebra.single b (1 : ℝ) = uniform G := by
   classical
@@ -181,7 +184,7 @@ theorem uniform_mul_single (b : G) :
     · intro hcon; exact absurd (Finset.mem_univ b) hcon
   rw [this, one_smul]
 
-set_option linter.unusedDecidableInType false in
+omit [DecidableEq G] in
 theorem L_uniform_mul_L_single (b : G) :
     L (uniform G) * L (MonoidAlgebra.single b (1 : ℝ)) = L (uniform G) := by
   rw [← L_mul, uniform_mul_single]
@@ -240,19 +243,19 @@ theorem duhamel_integrand_split_at (lam0 : RateFn G) (s x : G) (α t σ : ℝ) :
 
 /-! ### The integral calculus, and the derivative -/
 
-omit [Group G] in
+omit [Group G] [DecidableEq G] in
 noncomputable def mulRightCLM (Q : Matrix G G ℂ) : Matrix G G ℂ →L[ℝ] Matrix G G ℂ :=
   LinearMap.toContinuousLinearMap
     { toFun := fun X => X * Q
       map_add' := fun X Y => add_mul X Y Q
       map_smul' := fun r X => smul_mul_assoc r X Q }
 
-omit [Group G] in
-set_option linter.unusedDecidableInType false in
+omit [Group G] [DecidableEq G] in
 theorem integral_mul_const_matrix (Q : Matrix G G ℂ) (f : ℝ → Matrix G G ℂ)
     (hf : Continuous f) (a b : ℝ) :
-    (∫ s in a..b, f s) * Q = ∫ s in a..b, (f s * Q) :=
-  ((mulRightCLM Q).intervalIntegral_comp_comm (f := f)
+    (∫ s in a..b, f s) * Q = ∫ s in a..b, (f s * Q) := by
+  classical
+  exact ((mulRightCLM Q).intervalIntegral_comp_comm (f := f)
     (μ := MeasureTheory.volume) (hf.intervalIntegrable a b)).symm
 
 /-- The exponential of an affinely reparametrised generator is continuous in the
@@ -367,9 +370,7 @@ theorem reflCentered_deriv_value_at (lam0 : RateFn G) (s x : G) (α t : ℝ) :
   rw [intervalIntegral.integral_sub (hggcont.intervalIntegrable 0 1)
       (continuous_const.intervalIntegrable 0 1), intervalIntegral.integral_const, smul_sub]
   simp only [sub_zero, one_smul]
-  congr 1
-  congr 1
-  refine intervalIntegral.integral_congr fun y _ ↦ ?_
+  refine congrArg (· - _) (congrArg (t • ·) (intervalIntegral.integral_congr fun y _ ↦ ?_))
   rw [reflHeatMat, reflHeatMat, show y * t - t = -((1 - y) * t) by ring]
 
 /-- **The derivative value, summed over the inverse orbit.**
@@ -413,7 +414,6 @@ theorem hasDerivAt_reflCentered_integral (lam0 : RateFn G) (s : G) (t α : ℝ) 
   rw [← reflCentered_deriv_value_orbit lam0 s α t]
   exact hasDerivAt_reflCentered lam0 s t α
 
-set_option linter.unusedDecidableInType false in
 /-- Each exponential factor in the integrand is a fractional power of the centred
 element — which is what turns the integrand into the sandwich form. -/
 theorem reflHeatMat_mul_compl_eq_powElt (lam0 : RateFn G) {s : G} (hs1 : s ≠ 1)

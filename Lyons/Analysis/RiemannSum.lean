@@ -3,8 +3,10 @@ Copyright (c) 2026 AxiomMath. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Axiom Math
 -/
-import Lyons.Converse.CharSum
-import Mathlib.Topology.UniformSpace.HeineCantor
+module
+
+public import Lyons.Converse.CharSum
+public import Mathlib.Topology.UniformSpace.HeineCantor
 
 /-!
 # Uniform left-endpoint Riemann sums of a continuous function
@@ -46,6 +48,8 @@ the integrand `J_p ∘ cos` is the sign of the cosine, which jumps at `π/2` and
 `3π/2`; the continuous Riemann-sum theorem does not apply there, so that single
 exponent is not covered.
 -/
+
+@[expose] public section
 
 namespace Lyons.Analysis
 
